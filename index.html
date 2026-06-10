@@ -1,0 +1,717 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Interactive road trip planner and itinerary for the Sierra Ascent expedition from Santa Ana to Lake Tahoe, passing Sequoia, Kings Canyon, and Mammoth Lakes.">
+  <title>Sierra Ascent: Santa Ana to Lake Tahoe Road Trip 2026</title>
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- Custom Stylesheet -->
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- Hero Section -->
+  <header class="hero-banner" style="background-image: linear-gradient(rgba(0, 0, 0, 0.45), rgba(18, 30, 22, 0.95)), url('Image/Lake Tahoe_2.webp');">
+    <div class="hero-content">
+      <span class="hero-subtitle">Western & Eastern Sierra Expedition</span>
+      <h1 class="hero-title">Sierra Ascent</h1>
+      <p class="hero-description">An epic 4-day, 3-night road trip tracing the spine of the Sierra Nevada. From ancient sequoia giants to pristine alpine waters.</p>
+      
+      <!-- Metrics Bar -->
+      <div class="metrics-grid">
+        <div class="metric-card" id="metric-distance">
+          <div class="metric-value">693<span class="metric-unit">mi</span></div>
+          <div class="metric-label">Total Driving Distance</div>
+        </div>
+        <div class="metric-card" id="metric-time">
+          <div class="metric-value">14.1<span class="metric-unit">hrs</span></div>
+          <div class="metric-label">Net Driving Time</div>
+        </div>
+        <div class="metric-card" id="metric-duration">
+          <div class="metric-value">4<span class="metric-unit">Days</span></div>
+          <div class="metric-label">3 Nights / July 4-7</div>
+        </div>
+        <div class="metric-card" id="metric-stops">
+          <div class="metric-value">5<span class="metric-unit">Stops</span></div>
+          <div class="metric-label">Key Destinations</div>
+        </div>
+      </div>
+      
+      <div class="hero-cta">
+        <a href="#itinerary-section" class="btn btn-primary" id="btn-explore">Explore Itinerary</a>
+        <a href="#checklist-section" class="btn btn-secondary" id="btn-pack">Packing Checklist</a>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <!-- Interactive Map / Infographic Section -->
+    <section class="map-section" id="map-section">
+      <div class="section-container">
+        <h2 class="section-title text-center">Interactive Expedition Route</h2>
+        <p class="section-subtitle text-center">Click on any stop to view the highlight and jump to that day's plan.</p>
+        
+        <div class="map-wrapper">
+          <!-- Stylized SVG Map -->
+          <svg viewBox="0 0 1000 240" class="route-map-svg" id="route-map-svg">
+            <defs>
+              <linearGradient id="route-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop offset="0%" stop-color="#ef7e32" />
+                <stop offset="25%" stop-color="#4caf50" />
+                <stop offset="50%" stop-color="#81c784" />
+                <stop offset="75%" stop-color="#0288d1" />
+                <stop offset="100%" stop-color="#00acc1" />
+              </linearGradient>
+              <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+                <feGaussianBlur stdDeviation="6" result="blur" />
+                <feComposite in="SourceGraphic" in2="blur" operator="over" />
+              </filter>
+            </defs>
+            
+            <!-- Route Path Lines -->
+            <path d="M 100,120 Q 200,90 300,120 T 500,120 T 700,120 T 900,120" fill="none" stroke="#2a3b31" stroke-width="8" stroke-linecap="round" />
+            <path id="active-route" d="M 100,120 Q 200,90 300,120 T 500,120 T 700,120 T 900,120" fill="none" stroke="url(#route-gradient)" stroke-width="6" stroke-linecap="round" stroke-dasharray="1000" stroke-dashoffset="0" />
+            
+            <!-- Path Labels (Distances) -->
+            <g class="path-label" transform="translate(200, 85)">
+              <rect x="-65" y="-18" width="130" height="26" rx="13" fill="#1b2e22" stroke="#4caf50" stroke-width="1" />
+              <text text-anchor="middle" fill="#81c784" font-size="11" font-weight="600" y="-1">258 mi | ~4.5h</text>
+            </g>
+            
+            <g class="path-label" transform="translate(400, 100)">
+              <rect x="-55" y="-18" width="110" height="26" rx="13" fill="#1b2e22" stroke="#4caf50" stroke-width="1" />
+              <text text-anchor="middle" fill="#81c784" font-size="11" font-weight="600" y="-1">30 mi | ~1.2h</text>
+            </g>
+            
+            <g class="path-label" transform="translate(600, 100)">
+              <rect x="-85" y="-18" width="170" height="26" rx="13" fill="#1b2e22" stroke="#ef7e32" stroke-width="1" />
+              <text text-anchor="middle" fill="#ffa726" font-size="11" font-weight="600" y="-1">240 mi | ~5.2h (Tioga Pass)</text>
+            </g>
+            
+            <g class="path-label" transform="translate(800, 100)">
+              <rect x="-75" y="-18" width="150" height="26" rx="13" fill="#1b2e22" stroke="#00acc1" stroke-width="1" />
+              <text text-anchor="middle" fill="#4dd0e1" font-size="11" font-weight="600" y="-1">165 mi | ~3.2h (US-395)</text>
+            </g>
+            
+            <!-- Map Nodes -->
+            <!-- Santa Ana -->
+            <g class="map-node active" id="node-santa-ana" transform="translate(100, 120)" data-day="1">
+              <circle r="18" fill="#16251b" stroke="#ef7e32" stroke-width="4" filter="url(#glow)" />
+              <circle r="8" fill="#ef7e32" />
+              <text y="42" text-anchor="middle" fill="#fff" font-size="13" font-weight="700">Santa Ana</text>
+              <text y="58" text-anchor="middle" fill="#888" font-size="11" font-weight="500">Departure</text>
+            </g>
+            
+            <!-- Sequoia -->
+            <g class="map-node" id="node-sequoia" transform="translate(300, 120)" data-day="1">
+              <circle r="16" fill="#16251b" stroke="#4caf50" stroke-width="3" />
+              <circle r="6" fill="#4caf50" />
+              <text y="42" text-anchor="middle" fill="#fff" font-size="13" font-weight="700">Sequoia NP</text>
+              <text y="58" text-anchor="middle" fill="#888" font-size="11" font-weight="500">General Sherman</text>
+            </g>
+            
+            <!-- Kings Canyon -->
+            <g class="map-node" id="node-kings-canyon" transform="translate(500, 120)" data-day="1">
+              <circle r="16" fill="#16251b" stroke="#81c784" stroke-width="3" />
+              <circle r="6" fill="#81c784" />
+              <text y="42" text-anchor="middle" fill="#fff" font-size="13" font-weight="700">Kings Canyon</text>
+              <text y="58" text-anchor="middle" fill="#888" font-size="11" font-weight="500">General Grant</text>
+            </g>
+            
+            <!-- Mammoth Lakes -->
+            <g class="map-node" id="node-mammoth" transform="translate(700, 120)" data-day="1">
+              <circle r="16" fill="#16251b" stroke="#ffa726" stroke-width="3" />
+              <circle r="6" fill="#ffa726" />
+              <text y="42" text-anchor="middle" fill="#fff" font-size="13" font-weight="700">Mammoth Lakes</text>
+              <text y="58" text-anchor="middle" fill="#888" font-size="11" font-weight="500">Stay Night 1</text>
+            </g>
+            
+            <!-- Lake Tahoe -->
+            <g class="map-node" id="node-tahoe" transform="translate(900, 120)" data-day="2">
+              <circle r="18" fill="#16251b" stroke="#00acc1" stroke-width="4" />
+              <circle r="8" fill="#00acc1" />
+              <text y="42" text-anchor="middle" fill="#fff" font-size="13" font-weight="700">Lake Tahoe</text>
+              <text y="58" text-anchor="middle" fill="#888" font-size="11" font-weight="500">Stay Nights 2 & 3</text>
+            </g>
+          </svg>
+        </div>
+
+        <!-- Inline info drawer for active node -->
+        <div id="map-info-panel" class="map-info-panel">
+          <div class="info-panel-header">
+            <h3 id="panel-stop-title">Santa Ana</h3>
+            <span class="badge" id="panel-stop-badge">Start Location</span>
+          </div>
+          <p id="panel-stop-description">The expedition launch point. Cruising out early to bypass regional commute blockages.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Day-by-Day Itinerary Section -->
+    <section class="itinerary-section" id="itinerary-section">
+      <div class="section-container">
+        <h2 class="section-title text-center">Day-by-Day Expedition Itinerary</h2>
+        
+        <!-- Day Navigation Tabs -->
+        <div class="day-tabs-wrapper">
+          <div class="day-tabs" role="tablist">
+            <button class="day-tab active" id="tab-day1" role="tab" aria-selected="true" aria-controls="panel-day1" data-day="1">
+              <span class="tab-day-num">Day 1</span>
+              <span class="tab-day-title">The Dawn Giants</span>
+            </button>
+            <button class="day-tab" id="tab-day2" role="tab" aria-selected="false" aria-controls="panel-day2" data-day="2">
+              <span class="tab-day-num">Day 2</span>
+              <span class="tab-day-title">The Cobalt Ascent</span>
+            </button>
+            <button class="day-tab" id="tab-day3" role="tab" aria-selected="false" aria-controls="panel-day3" data-day="3">
+              <span class="tab-day-num">Day 3</span>
+              <span class="tab-day-title">Cascade & Lake</span>
+            </button>
+            <button class="day-tab" id="tab-day4" role="tab" aria-selected="false" aria-controls="panel-day4" data-day="4">
+              <span class="tab-day-num">Day 4</span>
+              <span class="tab-day-title">Homeward Bound</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Itinerary Content Panels -->
+        <div class="itinerary-panels">
+          
+          <!-- Day 1 Panel -->
+          <article class="itinerary-panel active" id="panel-day1" role="tabpanel" aria-labelledby="tab-day1">
+            <div class="panel-grid">
+              <div class="panel-details">
+                <div class="panel-meta-info">
+                  <span class="date-badge">Friday, July 4th</span>
+                  <span class="distance-badge">288 mi Traveled (Stops) + 240 mi to Mammoth</span>
+                </div>
+                <h3 class="day-heading">Day 1 — The Dawn Giants & Mountain Crest</h3>
+                <p class="day-summary">Departing Santa Ana at midnight to fully bypass Holiday weekend Southern California freeway bottlenecks. Ascend the Sierra foothills to catch the first light filtering through the world's largest giant sequoia forests.</p>
+                
+                <div class="itinerary-details-grid">
+                  <div class="detail-item">
+                    <strong>Transit Corridor:</strong>
+                    <span>I-5 N over Tejon Pass ➔ CA-99 N ➔ CA-198 E into foothill canyons, then CA-120 (Tioga Pass) or CA-108 over the crest.</span>
+                  </div>
+                  <div class="detail-item">
+                    <strong>Basecamp Target:</strong>
+                    <span>Alpine hotel lodging in Mammoth Lakes (7,800 ft elevation) for Night 1.</span>
+                  </div>
+                </div>
+
+                <!-- Timeline -->
+                <div class="timeline">
+                  <div class="timeline-item">
+                    <div class="timeline-time">00:00 AM</div>
+                    <div class="timeline-content">
+                      <h4>Midnight Departure</h4>
+                      <p>Start the launch from Santa Ana. Enjoy clear open freeway lanes as you drive north through the night.</p>
+                    </div>
+                  </div>
+                  <div class="timeline-item">
+                    <div class="timeline-time">04:30 AM</div>
+                    <div class="timeline-content">
+                      <h4>Sequoia National Park Arrival</h4>
+                      <p>Enter the giant forest gates just as dawn breaks. Catch early light bouncing off the gigantic tree trunks.</p>
+                    </div>
+                  </div>
+                  <div class="timeline-item">
+                    <div class="timeline-time">Morning Focus</div>
+                    <div class="timeline-content">
+                      <h4>The Giant Sequoias & Moro Rock</h4>
+                      <p><strong>General Sherman Tree:</strong> Stroll the peaceful walking loop in the quiet dawn hours before the crowds arrive.</p>
+                      <p><strong>Moro Rock:</strong> Hike the 350-step granite stairs to catch a stunning 360-degree vista of the Great Western Divide.</p>
+                      <p><strong>Tunnel Log:</strong> Drive your vehicle directly through the hollowed-out carcass of a fallen giant tree for a classic group photo.</p>
+                    </div>
+                  </div>
+                  <div class="timeline-item">
+                    <div class="timeline-time">10:00 AM</div>
+                    <div class="timeline-content">
+                      <h4>Kings Canyon National Park</h4>
+                      <p>Transit north on the Generals Highway (30 mi). Visit the **General Grant Tree** (the Nation's Christmas Tree) and stroll the peaceful forest walkways.</p>
+                    </div>
+                  </div>
+                  <div class="timeline-item">
+                    <div class="timeline-time">12:00 PM</div>
+                    <div class="timeline-content">
+                      <h4>The Great Crest Traverse</h4>
+                      <p>Head east over the Sierra mountains using the gorgeous **Tioga Pass (Yosemite CA-120)** or CA-108. Enjoy spectacular granite landscapes rising above the timberline.</p>
+                    </div>
+                  </div>
+                  <div class="timeline-item">
+                    <div class="timeline-time">05:30 PM</div>
+                    <div class="timeline-content">
+                      <h4>Mammoth Lakes Settle-in</h4>
+                      <p>Arrive in Mammoth Lakes. Check-in to your hotel, grab a hearty meal in the alpine village, and relax in nearby geothermal hot springs under the stars.</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Media Grid -->
+              <div class="panel-media">
+                <h4 class="media-title">Scenery & Highlights</h4>
+                <div class="photo-gallery">
+                  <figure class="gallery-item">
+                    <img src="Image/Giant Sequoia Tree_1.jpg" alt="Misty Giant Sequoia forest in Sequoia National Park" loading="lazy">
+                    <figcaption>General Sherman & The Giant Forest</figcaption>
+                  </figure>
+                  <figure class="gallery-item">
+                    <img src="Image/Giant Sequoia Tree_2.jpg" alt="Giant Sequoia trunks towering into the canopy" loading="lazy">
+                    <figcaption>Sequoia Redwoods Canopy</figcaption>
+                  </figure>
+                  <figure class="gallery-item">
+                    <img src="Image/General Grant Tree_1.jpg" alt="General Grant Tree in Kings Canyon National Park" loading="lazy">
+                    <figcaption>The General Grant Tree</figcaption>
+                  </figure>
+                </div>
+              </div>
+            </div>
+          </article>
+          
+          <!-- Day 2 Panel -->
+          <article class="itinerary-panel" id="panel-day2" role="tabpanel" aria-labelledby="tab-day2">
+            <div class="panel-grid">
+              <div class="panel-details">
+                <div class="panel-meta-info">
+                  <span class="date-badge">Saturday, July 5th</span>
+                  <span class="distance-badge">165 mi Traveled</span>
+                </div>
+                <h3 class="day-heading">Day 2 — The Cobalt Ascent & Lake Tahoe Relaxation</h3>
+                <p class="day-summary">Depart Mammoth Lakes and travel north along the majestic Eastern Sierra corridor of US-395. Arrive at the dazzling alpine basin of Lake Tahoe to settle in and spend a relaxed day enjoying local city dining, beaches, and watercraft rentals.</p>
+                
+                <div class="itinerary-details-grid">
+                  <div class="detail-item">
+                    <strong>Transit Corridor:</strong>
+                    <span>US-395 North past Mono Lake tufa towers and Sierra passes into South Lake Tahoe.</span>
+                  </div>
+                  <div class="detail-item">
+                    <strong>Basecamp Target:</strong>
+                    <span>Cozy cabin or resort lodging in South Lake Tahoe for Nights 2 & 3.</span>
+                  </div>
+                </div>
+
+                <!-- Timeline -->
+                <div class="timeline">
+                  <div class="timeline-item">
+                    <div class="timeline-time">09:00 AM</div>
+                    <div class="timeline-content">
+                      <h4>Eastern Sierra Cruise</h4>
+                      <p>Depart Mammoth Lakes. Travel along US-395 N. Look out for the otherworldly tufa limestone spires of **Mono Lake** on your right.</p>
+                    </div>
+                  </div>
+                  <div class="timeline-item">
+                    <div class="timeline-time">12:30 PM</div>
+                    <div class="timeline-content">
+                      <h4>Lake Tahoe Basin Arrival</h4>
+                      <p>Arrive in South Lake Tahoe. Capture your first breath-taking glimpse of the cobalt-blue waters. Check in to your lakeside basecamp.</p>
+                    </div>
+                  </div>
+                  <div class="timeline-item">
+                    <div class="timeline-time">02:00 PM</div>
+                    <div class="timeline-content">
+                      <h4>Lake & City Recreation</h4>
+                      <p>Stay local. Rent a kayak, paddleboard, or jet ski in South Lake Tahoe. Float on the crystal clear waters, explore the shoreline, or sunbathe at Pope Beach.</p>
+                    </div>
+                  </div>
+                  <div class="timeline-item">
+                    <div class="timeline-time">06:00 PM</div>
+                    <div class="timeline-content">
+                      <h4>Cave Rock Sunset Scramble</h4>
+                      <p>Drive to Lake Tahoe's East Shore (Nevada side). Do the short, steep scramble up **Cave Rock** to stand atop the giant granite formation, enjoying a panoramic sunset view over the massive lake.</p>
+                    </div>
+                  </div>
+                  <div class="timeline-item">
+                    <div class="timeline-time">08:00 PM</div>
+                    <div class="timeline-content">
+                      <h4>Lakeside Campfire & Celebration</h4>
+                      <p>Head back to South Lake Tahoe for dinner. Gather around a lakeside fire pit, toast marshmallows, and celebrate the journey.</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Media Grid -->
+              <div class="panel-media">
+                <h4 class="media-title">Scenery & Highlights</h4>
+                <div class="photo-gallery">
+                  <figure class="gallery-item">
+                    <img src="Image/Lake Tahoe_1.webp" alt="Beautiful crystal clear waters of Lake Tahoe shore" loading="lazy">
+                    <figcaption>Cobalt Waters of Lake Tahoe</figcaption>
+                  </figure>
+                  <figure class="gallery-item">
+                    <img src="Image/Lake Tahoe_2.webp" alt="Emerald Bay panoramic view with Fannette Island at Lake Tahoe" loading="lazy">
+                    <figcaption>Emerald Bay & Fannette Island</figcaption>
+                  </figure>
+                </div>
+              </div>
+            </div>
+          </article>
+          
+          <!-- Day 3 Panel -->
+          <article class="itinerary-panel" id="panel-day3" role="tabpanel" aria-labelledby="tab-day3">
+            <div class="panel-grid">
+              <div class="panel-details">
+                <div class="panel-meta-info">
+                  <span class="date-badge">Sunday, July 6th</span>
+                  <span class="distance-badge">~438 mi Round Trip Excursion</span>
+                </div>
+                <h3 class="day-heading">Day 3 — The Great Cascade & Eagle Lake Hike</h3>
+                <p class="day-summary">Embark on a scenic highway sprint north to McArthur-Burney Falls Memorial State Park to witness the roaring basalt waterfall. On the way back, head to the beautiful Eagle Lake for a scenic mountain hike.</p>
+                
+                <div class="itinerary-details-grid">
+                  <div class="detail-item">
+                    <strong>Transit Corridor:</strong>
+                    <span>Drive north past Lassen Volcanic National Park to Burney Falls and Eagle Lake, returning to South Lake Tahoe.</span>
+                  </div>
+                  <div class="detail-item">
+                    <strong>Notice:</strong>
+                    <span>Must reserve a day-use parking pass online in advance due to the holiday weekend.</span>
+                  </div>
+                </div>
+
+                <!-- Timeline -->
+                <div class="timeline">
+                  <div class="timeline-item">
+                    <div class="timeline-time">08:00 AM</div>
+                    <div class="timeline-content">
+                      <h4>Road Trip North</h4>
+                      <p>Grab coffees and hit the highway. Enjoy scenic drives passing mountain peaks as you drive north to Burney Falls (approx 4.5 hours drive).</p>
+                    </div>
+                  </div>
+                  <div class="timeline-item">
+                    <div class="timeline-time">12:30 PM</div>
+                    <div class="timeline-content">
+                      <h4>Burney Falls Basalt Cascade</h4>
+                      <p>Marvel at the moss-covered basalt cascade, feel the cold mist on your face, and walk the short loop trail around the waterfall basin. <strong>Day-use vehicle fee: $11.</strong></p>
+                    </div>
+                  </div>
+                  <div class="timeline-item">
+                    <div class="timeline-time">03:30 PM</div>
+                    <div class="timeline-content">
+                      <h4>Eagle Lake Hike</h4>
+                      <p>Drive to nearby Eagle Lake. Hike the scenic, rewarding trail to enjoy beautiful mountain views, pine forest scents, and pristine alpine lake waters.</p>
+                    </div>
+                  </div>
+                  <div class="timeline-item">
+                    <div class="timeline-time">08:30 PM</div>
+                    <div class="timeline-content">
+                      <h4>Reunite & Final Lake Night</h4>
+                      <p>Return to South Lake Tahoe for a final celebration dinner. Share pictures from the day, visit local spots, and enjoy the last night of the expedition.</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Media Grid -->
+              <div class="panel-media">
+                <h4 class="media-title">Scenery & Highlights</h4>
+                <div class="photo-gallery">
+                  <figure class="gallery-item">
+                    <img src="Image/Burney Falls _ Lake Tahoe _ 1.jpg" alt="Spectacular Burney Falls surrounded by green mossy cliffs" loading="lazy">
+                    <figcaption>The Roaring Burney Falls</figcaption>
+                  </figure>
+                  <figure class="gallery-item">
+                    <img src="Image/Eagle Lake hike _ Lake Tahoe_1.jpg" alt="Eagle Lake and surrounding mountain trail at Lake Tahoe" loading="lazy">
+                    <figcaption>Eagle Lake Trail Hike</figcaption>
+                  </figure>
+                </div>
+              </div>
+            </div>
+          </article>
+          
+          <!-- Day 4 Panel -->
+          <article class="itinerary-panel" id="panel-day4" role="tabpanel" aria-labelledby="tab-day4">
+            <div class="panel-grid">
+              <div class="panel-details">
+                <div class="panel-meta-info">
+                  <span class="date-badge">Monday, July 7th</span>
+                  <span class="distance-badge">~450 mi Return Trip</span>
+                </div>
+                <h3 class="day-heading">Day 4 — Homeward Bound</h3>
+                <p class="day-summary">Savor a slow, peaceful morning by the lake, pack up your gear, and begin the drive south back to Southern California with memory cards full of mountain views.</p>
+                
+                <div class="itinerary-details-grid">
+                  <div class="detail-item">
+                    <strong>Transit Corridor:</strong>
+                    <span>US-395 South along the Eastern Sierra crest back down to Southern California / Orange County.</span>
+                  </div>
+                </div>
+
+                <!-- Timeline -->
+                <div class="timeline">
+                  <div class="timeline-item">
+                    <div class="timeline-time">08:30 AM</div>
+                    <div class="timeline-content">
+                      <h4>Lakeside Coffee & Breakfast</h4>
+                      <p>Enjoy one last hot breakfast in South Lake Tahoe. Walk along the shoreline to watch the morning light reflect off the calm lake surface.</p>
+                    </div>
+                  </div>
+                  <div class="timeline-item">
+                    <div class="timeline-time">10:30 AM</div>
+                    <div class="timeline-content">
+                      <h4>Load & Check out</h4>
+                      <p>Pack up the vehicle cooler, dry bin, and luggage. Make sure no gear is left behind.</p>
+                    </div>
+                  </div>
+                  <div class="timeline-item">
+                    <div class="timeline-time">11:00 AM</div>
+                    <div class="timeline-content">
+                      <h4>The Southern Descent</h4>
+                      <p>Drive south along US-395. Enjoy the scenic drive passing Mt. Whitney and the Alabama Hills, stopping for snacks and fuel along the way.</p>
+                    </div>
+                  </div>
+                  <div class="timeline-item">
+                    <div class="timeline-time">07:00 PM</div>
+                    <div class="timeline-content">
+                      <h4>Arrive Home</h4>
+                      <p>Return to Santa Ana in the evening, concluding the epic Sierra Ascent expedition.</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Media Grid -->
+              <div class="panel-media">
+                <div class="no-media-card">
+                  <svg viewBox="0 0 24 24" width="48" height="48" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                    <polyline points="9 22 9 12 15 12 15 22"></polyline>
+                  </svg>
+                  <h4>Conclusion of the Journey</h4>
+                  <p>Heading back home to Santa Ana. Share your photos and plan your next mountain adventure!</p>
+                </div>
+              </div>
+            </div>
+          </article>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- Checklist & Preparation Section -->
+    <section class="checklist-section" id="checklist-section">
+      <div class="section-container">
+        <h2 class="section-title text-center">Preparation & Packing Dashboard</h2>
+        <p class="section-subtitle text-center">Interactive checklist to coordinate with your friend. Progress is saved locally as you check items off.</p>
+        
+        <div class="checklist-grid">
+          <!-- Essentials Card -->
+          <div class="checklist-card" id="card-essentials">
+            <div class="card-header">
+              <div class="card-icon">
+                <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2" fill="none">
+                  <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+                </svg>
+              </div>
+              <div class="card-header-content">
+                <h3>Trip Essentials</h3>
+                <div class="progress-bar-wrapper">
+                  <div class="progress-bar"><div class="progress-fill" id="fill-essentials"></div></div>
+                  <span class="progress-text" id="text-essentials">0%</span>
+                </div>
+              </div>
+            </div>
+            <ul class="checklist-items" data-category="essentials">
+              <li>
+                <label class="checkbox-container">
+                  <input type="checkbox" id="item-pass">
+                  <span class="checkmark"></span>
+                  <span class="item-text">America the Beautiful Pass <span class="item-badge required">Required</span></span>
+                </label>
+              </li>
+              <li>
+                <label class="checkbox-container">
+                  <input type="checkbox" id="item-maps">
+                  <span class="checkmark"></span>
+                  <span class="item-text">Offline GPS Maps downloaded <span class="item-badge required">Important</span></span>
+                </label>
+              </li>
+              <li>
+                <label class="checkbox-container">
+                  <input type="checkbox" id="item-sunscreen">
+                  <span class="checkmark"></span>
+                  <span class="item-text">Sunscreen <span class="item-badge required">Important</span></span>
+                </label>
+              </li>
+              <li>
+                <label class="checkbox-container">
+                  <input type="checkbox" id="item-mosquito">
+                  <span class="checkmark"></span>
+                  <span class="item-text">Mosquito protection <span class="item-badge required">Important</span></span>
+                </label>
+              </li>
+              <li>
+                <label class="checkbox-container">
+                  <input type="checkbox" id="item-burney">
+                  <span class="checkmark"></span>
+                  <span class="item-text">Burney Falls Permit & Day-Use Pass ($11) <span class="item-badge required">Required</span></span>
+                </label>
+              </li>
+              <li>
+                <label class="checkbox-container">
+                  <input type="checkbox" id="item-funds">
+                  <span class="checkmark"></span>
+                  <span class="item-text">Prepare $500 cash / trip funds <span class="item-badge required">Recommended</span></span>
+                </label>
+              </li>
+              <li>
+                <label class="checkbox-container">
+                  <input type="checkbox" id="item-firstaid">
+                  <span class="checkmark"></span>
+                  <span class="item-text">First-Aid Kit <span class="item-badge info">Ready - Samuel Do</span></span>
+                </label>
+              </li>
+            </ul>
+          </div>
+
+          <!-- Food & Drink Card -->
+          <div class="checklist-card" id="card-food">
+            <div class="card-header">
+              <div class="card-icon">
+                <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2" fill="none">
+                  <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+                </svg>
+              </div>
+              <div class="card-header-content">
+                <h3>Food & Hydration</h3>
+                <div class="progress-bar-wrapper">
+                  <div class="progress-bar"><div class="progress-fill" id="fill-food"></div></div>
+                  <span class="progress-text" id="text-food">0%</span>
+                </div>
+              </div>
+            </div>
+            <ul class="checklist-items" data-category="food">
+              <li>
+                <label class="checkbox-container">
+                  <input type="checkbox" id="item-snacks">
+                  <span class="checkmark"></span>
+                  <span class="item-text">Dry Snack Bin (trail mix, bars) <span class="item-badge info">Stocked</span></span>
+                </label>
+              </li>
+              <li>
+                <label class="checkbox-container">
+                  <input type="checkbox" id="item-water">
+                  <span class="checkmark"></span>
+                  <span class="item-text">Water container/flasks (min 10L) <span class="item-badge required">Individual</span></span>
+                </label>
+              </li>
+            </ul>
+          </div>
+
+          <!-- Apparel & Gear Card -->
+          <div class="checklist-card" id="card-apparel">
+            <div class="card-header">
+              <div class="card-icon">
+                <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2" fill="none">
+                  <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 0 1-3.46 0"/>
+                </svg>
+              </div>
+              <div class="card-header-content">
+                <h3>Apparel & Gear</h3>
+                <div class="progress-bar-wrapper">
+                  <div class="progress-bar"><div class="progress-fill" id="fill-apparel"></div></div>
+                  <span class="progress-text" id="text-apparel">0%</span>
+                </div>
+              </div>
+            </div>
+            <ul class="checklist-items" data-category="apparel">
+              <li>
+                <label class="checkbox-container">
+                  <input type="checkbox" id="item-hiking-shoes">
+                  <span class="checkmark"></span>
+                  <span class="item-text">High-traction Hiking Shoes <span class="item-badge required">Individual</span></span>
+                </label>
+              </li>
+              <li>
+                <label class="checkbox-container">
+                  <input type="checkbox" id="item-layers">
+                  <span class="checkmark"></span>
+                  <span class="item-text">Layered Day Apparel (85°F valleys) <span class="item-badge required">4 Days</span></span>
+                </label>
+              </li>
+              <li>
+                <label class="checkbox-container">
+                  <input type="checkbox" id="item-jacket">
+                  <span class="checkmark"></span>
+                  <span class="item-text">Fleece / Windbreaker (45°F nights) <span class="item-badge required">Individual</span></span>
+                </label>
+              </li>
+              <li>
+                <label class="checkbox-container">
+                  <input type="checkbox" id="item-swimwear">
+                  <span class="checkmark"></span>
+                  <span class="item-text">Swimwear & Quick-dry Towel <span class="item-badge info">For Tahoe</span></span>
+                </label>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Group Logistics & Social Copy -->
+    <section class="share-section" id="share-section">
+      <div class="section-container">
+        <div class="share-card">
+          <div class="share-card-content">
+            <span class="share-eyebrow">Ready to Roll?</span>
+            <h3>Copy Trip Summary</h3>
+            <p>Send the road trip overview directly to your friend. Contains distances, stops, and packing highlights formatted for messaging apps.</p>
+            
+            <div class="copy-box-container">
+              <pre class="copy-box" id="share-text-box">🏔️ SIERRA ASCENT ROAD TRIP 2026 🏔️
+Dates: Friday, July 4th – Monday, July 7th
+Total Drive: ~693 Miles | ~14 Hours Net Driving
+
+📍 THE ITINERARY:
+• Day 1: Santa Ana ➔ Sequoia NP (Sherman Tree & Moro Rock) ➔ Kings Canyon NP (Grant Tree) ➔ Tioga Pass Traverse ➔ Stay Mammoth Lakes
+• Day 2: Mammoth Lakes ➔ US-395 Corridor ➔ South Lake Tahoe Arrival ➔ Lake & City Recreation (Kayak/Paddleboard) ➔ Cave Rock Sunset Scramble ➔ Stay South Lake Tahoe
+• Day 3: Burney Falls Cascade & Eagle Lake Hike Day Trip (Permit Required!) ➔ Stay South Lake Tahoe
+• Day 4: Slow Morning lakeside ➔ Pack up ➔ Drive US-395 South home to Orange County
+
+🎒 KEY ESSENTIALS:
+• America the Beautiful National Parks Pass (Samuel Do)
+• Burney Falls Permit & Day-Use Pass ($11 - Required)
+• Offline GPS Maps downloaded (All - Important!)
+• Sunscreen & Mosquito protection (Important!)
+• First-Aid Kit (Ready by Samuel Do)
+• Prepare $500 cash / emergency funds (All)
+• Reusable water container/flasks (min 10L per person)
+• Windbreaker/fleece for cold mountain nights (45°F)
+• Trail-ready hiking shoes
+
+Let's do this! 🚗💨 #SierraAscent #Roadtrip #Mountains</pre>
+            </div>
+            
+            <button class="btn btn-primary" id="btn-copy-share">
+              <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none" class="icon-copy">
+                <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+              </svg>
+              <span id="copy-btn-text">Copy to Clipboard</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="app-footer">
+    <div class="section-container text-center">
+      <p class="footer-title">Sierra Ascent: Santa Ana to Lake Tahoe 2026</p>
+      <p class="footer-meta">Created for the ultimate July 4th holiday weekend road trip.</p>
+      <p class="footer-meta" style="margin-top: 8px; font-size: 0.75rem; opacity: 0.7;">Co-authored by Samuel Do & Antigravity</p>
+    </div>
+  </footer>
+
+  <!-- App Interactivity Logic -->
+  <script src="app.js"></script>
+</body>
+</html>
