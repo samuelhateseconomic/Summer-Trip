@@ -154,9 +154,9 @@ document.addEventListener('DOMContentLoaded', () => {
         break;
 
       case 'node-kings-canyon':
-        // Fill seg1 completely, seg2 hidden
+        // Day 2 driving continues to Tahoe, so fill seg2 completely
         s1Offset  = 0;
-        s2Offset  = burneyActive ? seg2BurLen : seg2DirLen;
+        s2Offset  = 0;
         retOffset = retLen;
         break;
 
