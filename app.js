@@ -1,158 +1,159 @@
 document.addEventListener('DOMContentLoaded', () => {
-  
-  // --- DATA DEFINITIONS ---
-  
+
+  // ═══════════════════════════════════════════════
+  // STOP DATA
+  // ═══════════════════════════════════════════════
   const stopDetails = {
     'node-santa-ana': {
       title: 'Santa Ana, CA',
-      badge: 'Departure Point',
-      description: 'The starting basecamp. Rolling out at Thursday midnight (00:00 AM Friday) to bypass 100% of Southern California freeway traffic.',
-      day: 1
+      badge: 'Departure & Return Base',
+      description: 'The loop launches at 00:00 AM Friday, July 3rd — midnight departure bypasses 100% of Southern California Friday morning gridlock. Loop closes here Monday evening after 723 miles.',
+      day: 1,
+      outboundOffset: 900,
+      returnOffset: 600
     },
     'node-sequoia': {
       title: 'Sequoia National Park',
-      badge: 'Stop 1 (Day 1)',
-      description: 'Home of the General Sherman Tree (the largest living tree on Earth). Activities include climbing Moro Rock at sunrise and driving through the Tunnel Log.',
-      day: 1
+      badge: 'Night 1 · July 3rd',
+      description: 'Arrive at dawn (5:00 AM) for an uncrowded misty morning among the world\'s largest trees. Moro Rock sunrise, General Sherman Tree, and Tunnel Log. Sleep Night 1 in the ancient giant forest at 6,200 ft.',
+      day: 1,
+      outboundOffset: 600,
+      returnOffset: 600
     },
     'node-kings-canyon': {
       title: 'Kings Canyon National Park',
-      badge: 'Stop 2 (Day 1)',
-      description: 'Explore the General Grant Tree loop trail. Transit north via Generals Highway, then traverse the crest of the Sierras via Yosemite\'s Tioga Pass.',
-      day: 1
-    },
-    'node-mammoth': {
-      title: 'Mammoth Lakes, CA',
-      badge: 'Night 1 Basecamp',
-      description: 'Arrive at 5:30 PM after a scenic drive over the Sierra crest. Settle in, dine in the village, and soak in hot springs under a clear night sky.',
-      day: 1
+      badge: 'Day 2 · Saturday Morning',
+      description: 'Drive the historic Generals Highway north (30 mi). Explore the General Grant Grove and stroll the Zumwalt Meadow boardwalk along the glacier-carved canyon floor before pushing north to Lake Tahoe.',
+      day: 2,
+      outboundOffset: 380,
+      returnOffset: 600
     },
     'node-tahoe': {
       title: 'Lake Tahoe, CA/NV',
-      badge: 'Nights 2 & 3 Basecamp',
-      description: 'Enjoy 2 nights by the water. Settle in and enjoy city/lake activities on Day 2, and take a day excursion north to Burney Falls and Eagle Lake on Day 3.',
-      day: 2
+      badge: 'Nights 2 & 3 · Resort Base',
+      description: 'Arrive Saturday evening for 2 nights at the cobalt alpine lake. Sunday is entirely dedicated to Eagle Falls, Emerald Bay, lakeside recreation, and the Cave Rock 180-degree sunset scramble.',
+      day: 3,
+      outboundOffset: 0,
+      returnOffset: 600
+    },
+    'node-mammoth': {
+      title: 'Mammoth Lakes, CA',
+      badge: 'Day 4 · Return Stopover',
+      description: 'Monday return stopover on US-395 South (165 mi from Tahoe). Lunch in the mountain village, optional Minaret Vista viewpoint, and a scenic walk at Convict Lake before the final descent to Orange County.',
+      day: 4,
+      outboundOffset: 0,
+      returnOffset: 300
     }
   };
 
-  // --- SVG MAP INTERACTIVITY ---
+  // ═══════════════════════════════════════════════
+  // SVG MAP INTERACTIVITY
+  // ═══════════════════════════════════════════════
+  const mapNodes      = document.querySelectorAll('.map-node');
+  const infoPanel     = document.getElementById('map-info-panel');
+  const panelTitle    = document.getElementById('panel-stop-title');
+  const panelBadge    = document.getElementById('panel-stop-badge');
+  const panelDesc     = document.getElementById('panel-stop-description');
+  const outboundRoute = document.getElementById('outbound-route');
+  const returnRoute   = document.getElementById('return-route');
 
-  const mapNodes = document.querySelectorAll('.map-node');
-  const infoPanel = document.getElementById('map-info-panel');
-  const panelTitle = document.getElementById('panel-stop-title');
-  const panelBadge = document.getElementById('panel-stop-badge');
-  const panelDesc = document.getElementById('panel-stop-description');
-  const activeRoute = document.getElementById('active-route');
-
-  // Trigger default selection (Santa Ana)
+  // Default selection on load
   updateMapInfo('node-santa-ana');
 
   mapNodes.forEach(node => {
     node.addEventListener('click', () => {
       const nodeId = node.id;
-      
-      // Update active styling
+
+      // Update active node styling
       mapNodes.forEach(n => n.classList.remove('active'));
       node.classList.add('active');
-      
+
       // Update info panel
       updateMapInfo(nodeId);
-      
-      // Sync Day Tab based on stop clicked
+
+      // Sync day tab
       const targetDay = stopDetails[nodeId].day;
       switchDayTab(targetDay);
-      
-      // Scroll to itinerary section smoothly
+
+      // Smooth scroll to itinerary
       document.getElementById('itinerary-section').scrollIntoView({ behavior: 'smooth' });
     });
   });
 
   function updateMapInfo(nodeId) {
     const data = stopDetails[nodeId];
-    if (data) {
-      panelTitle.textContent = data.title;
-      panelBadge.textContent = data.badge;
-      panelDesc.textContent = data.description;
-      
-      // Highlight SVG route paths depending on selection
-      // Adjust stroke dashoffset to animate route line
-      if (activeRoute) {
-        let offset = 1000;
-        if (nodeId === 'node-santa-ana') offset = 1000;
-        else if (nodeId === 'node-sequoia') offset = 750;
-        else if (nodeId === 'node-kings-canyon') offset = 500;
-        else if (nodeId === 'node-mammoth') offset = 250;
-        else if (nodeId === 'node-tahoe') offset = 0;
-        
-        activeRoute.style.strokeDashoffset = offset;
-      }
-      
-      infoPanel.classList.add('visible');
-    }
+    if (!data) return;
+
+    panelTitle.textContent = data.title;
+    panelBadge.textContent = data.badge;
+    panelDesc.textContent  = data.description;
+
+    // Animate the two loop paths
+    if (outboundRoute) outboundRoute.style.strokeDashoffset = data.outboundOffset;
+    if (returnRoute)   returnRoute.style.strokeDashoffset   = data.returnOffset;
+
+    infoPanel.classList.add('visible');
   }
 
-  // --- DAY ITINERARY TABS ---
+  // ═══════════════════════════════════════════════
+  // DAY-BY-DAY TABS
+  // ═══════════════════════════════════════════════
+  const dayTabs          = document.querySelectorAll('.day-tab');
+  const itineraryPanels  = document.querySelectorAll('.itinerary-panel');
 
-  const dayTabs = document.querySelectorAll('.day-tab');
-  const itineraryPanels = document.querySelectorAll('.itinerary-panel');
+  // Map: day number → which map node to highlight
+  const dayToNode = {
+    1: 'node-sequoia',
+    2: 'node-kings-canyon',
+    3: 'node-tahoe',
+    4: 'node-mammoth'
+  };
 
   dayTabs.forEach(tab => {
     tab.addEventListener('click', () => {
       const dayNum = parseInt(tab.getAttribute('data-day'), 10);
       switchDayTab(dayNum);
-      
-      // Sync map node active state to major destination of that day
-      if (dayNum === 1) {
-        syncMapActiveNode('node-sequoia');
-      } else if (dayNum === 2 || dayNum === 3) {
-        syncMapActiveNode('node-tahoe');
-      } else if (dayNum === 4) {
-        syncMapActiveNode('node-santa-ana');
-      }
+      // Sync the map node
+      const targetNode = dayToNode[dayNum];
+      if (targetNode) syncMapActiveNode(targetNode);
     });
   });
 
   function switchDayTab(dayNumber) {
-    // Update active tab buttons
     dayTabs.forEach(t => {
       const isTarget = parseInt(t.getAttribute('data-day'), 10) === dayNumber;
       t.classList.toggle('active', isTarget);
       t.setAttribute('aria-selected', isTarget ? 'true' : 'false');
     });
-
-    // Update active content panels
-    itineraryPanels.forEach((panel, index) => {
-      const isTarget = (index + 1) === dayNumber;
-      panel.classList.toggle('active', isTarget);
+    itineraryPanels.forEach((panel, idx) => {
+      panel.classList.toggle('active', (idx + 1) === dayNumber);
     });
   }
 
   function syncMapActiveNode(nodeId) {
-    mapNodes.forEach(node => {
-      if (node.id === nodeId) {
-        node.classList.add('active');
-        updateMapInfo(nodeId);
-      } else {
-        node.classList.remove('active');
-      }
-    });
+    mapNodes.forEach(node => node.classList.remove('active'));
+    const target = document.getElementById(nodeId);
+    if (target) {
+      target.classList.add('active');
+      updateMapInfo(nodeId);
+    }
   }
 
-  // --- PACKING DASHBOARD CHECKLISTS ---
-
+  // ═══════════════════════════════════════════════
+  // PACKING CHECKLIST + PROGRESS BARS
+  // ═══════════════════════════════════════════════
   const checklists = document.querySelectorAll('.checklist-items');
   const progressBars = {
     essentials: { fill: document.getElementById('fill-essentials'), text: document.getElementById('text-essentials') },
-    food: { fill: document.getElementById('fill-food'), text: document.getElementById('text-food') },
-    apparel: { fill: document.getElementById('fill-apparel'), text: document.getElementById('text-apparel') }
+    food:       { fill: document.getElementById('fill-food'),       text: document.getElementById('text-food') },
+    apparel:    { fill: document.getElementById('fill-apparel'),    text: document.getElementById('text-apparel') }
   };
 
-  // Restore checked items from LocalStorage
+  // Restore state from localStorage
   restoreChecklistState();
 
-  // Listen to changes on all checkboxes
-  document.querySelectorAll('.checklist-items input[type="checkbox"]').forEach(checkbox => {
-    checkbox.addEventListener('change', () => {
+  document.querySelectorAll('.checklist-items input[type="checkbox"]').forEach(cb => {
+    cb.addEventListener('change', () => {
       saveChecklistState();
       updateAllProgress();
     });
@@ -160,14 +161,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function updateAllProgress() {
     checklists.forEach(list => {
-      const category = list.getAttribute('data-category');
-      const checkboxes = list.querySelectorAll('input[type="checkbox"]');
+      const category    = list.getAttribute('data-category');
+      const all         = list.querySelectorAll('input[type="checkbox"]');
       const checkedCount = list.querySelectorAll('input[type="checkbox"]:checked').length;
-      const totalCount = checkboxes.length;
-      
-      const percent = totalCount > 0 ? Math.round((checkedCount / totalCount) * 100) : 0;
-      
-      // Update UI
+      const percent     = all.length > 0 ? Math.round((checkedCount / all.length) * 100) : 0;
       if (progressBars[category]) {
         progressBars[category].fill.style.width = `${percent}%`;
         progressBars[category].text.textContent = `${percent}%`;
@@ -177,56 +174,49 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function saveChecklistState() {
     const state = {};
-    document.querySelectorAll('.checklist-items input[type="checkbox"]').forEach(checkbox => {
-      state[checkbox.id] = checkbox.checked;
+    document.querySelectorAll('.checklist-items input[type="checkbox"]').forEach(cb => {
+      state[cb.id] = cb.checked;
     });
-    localStorage.setItem('sierra_ascent_checklist_v1', JSON.stringify(state));
+    localStorage.setItem('sierra_ascent_loop_v2', JSON.stringify(state));
   }
 
   function restoreChecklistState() {
-    const saved = localStorage.getItem('sierra_ascent_checklist_v1');
+    const saved = localStorage.getItem('sierra_ascent_loop_v2');
     if (saved) {
       try {
         const state = JSON.parse(saved);
         Object.keys(state).forEach(id => {
-          const checkbox = document.getElementById(id);
-          if (checkbox) {
-            checkbox.checked = state[id];
-          }
+          const cb = document.getElementById(id);
+          if (cb) cb.checked = state[id];
         });
       } catch (e) {
-        console.error('Error parsing stored checklist state', e);
+        console.error('Checklist state parse error:', e);
       }
     }
-    // Calculate progress bars initially
     updateAllProgress();
   }
 
-  // --- COPY LOGISTICS SHARE TEXT ---
-
-  const copyBtn = document.getElementById('btn-copy-share');
+  // ═══════════════════════════════════════════════
+  // CLIPBOARD SHARE COPY
+  // ═══════════════════════════════════════════════
+  const copyBtn     = document.getElementById('btn-copy-share');
   const copyBtnText = document.getElementById('copy-btn-text');
-  const shareTextBox = document.getElementById('share-text-box');
+  const shareBox    = document.getElementById('share-text-box');
 
-  if (copyBtn && shareTextBox && copyBtnText) {
+  if (copyBtn && shareBox && copyBtnText) {
     copyBtn.addEventListener('click', () => {
-      const text = shareTextBox.textContent || shareTextBox.innerText;
-      
+      const text = shareBox.textContent || shareBox.innerText;
       navigator.clipboard.writeText(text).then(() => {
-        // Success feedback
-        copyBtnText.textContent = 'Copied!';
-        copyBtn.style.backgroundColor = 'var(--forest-green)';
-        copyBtn.style.color = '#fff';
-        
+        copyBtnText.textContent        = 'Copied!';
+        copyBtn.style.background       = 'linear-gradient(135deg, #225132, #3d8c58)';
         setTimeout(() => {
-          copyBtnText.textContent = 'Copy to Clipboard';
-          copyBtn.style.backgroundColor = '';
-          copyBtn.style.color = '';
-        }, 2000);
-      }).catch(err => {
-        console.error('Failed to copy text: ', err);
-        alert('Could not copy automatically. Please select text manually.');
+          copyBtnText.textContent  = 'Copy to Clipboard';
+          copyBtn.style.background = '';
+        }, 2200);
+      }).catch(() => {
+        alert('Could not copy automatically. Please select the text manually.');
       });
     });
   }
+
 });
