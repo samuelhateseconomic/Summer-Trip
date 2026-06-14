@@ -1075,3 +1075,96 @@ section:nth-child(even) {
     padding-bottom: 16px;
   }
 }
+
+/* ══════════════════════════════════
+   OPTIONAL TAG (inline pill in heading)
+════════════════════════════════════ */
+.optional-tag {
+  display: inline-block;
+  font-size: 0.68rem;
+  font-weight: 600;
+  color: #ffa726;
+  background: rgba(255,167,38,0.12);
+  border: 1px solid rgba(255,167,38,0.35);
+  padding: 2px 8px;
+  border-radius: 20px;
+  margin-left: 8px;
+  vertical-align: middle;
+  letter-spacing: 0.3px;
+  white-space: nowrap;
+}
+
+/* ══════════════════════════════════
+   BURNEY FALLS ROUTE TOGGLE
+════════════════════════════════════ */
+.burney-toggle-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 12px 14px;
+  background: rgba(255,112,67,0.06);
+  border: 1px solid rgba(255,112,67,0.2);
+  border-radius: 10px;
+}
+
+.burney-toggle-label {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #fff;
+  gap: 12px;
+  user-select: none;
+}
+
+.toggle-switch input[type="checkbox"] {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.toggle-track {
+  display: inline-flex;
+  align-items: center;
+  width: 44px;
+  height: 24px;
+  background: rgba(255,255,255,0.12);
+  border-radius: 12px;
+  padding: 2px;
+  transition: background 0.3s ease;
+  flex-shrink: 0;
+  border: 1px solid rgba(255,255,255,0.1);
+}
+
+.toggle-thumb {
+  display: block;
+  width: 18px;
+  height: 18px;
+  background: #888;
+  border-radius: 50%;
+  transition: transform 0.3s ease, background 0.3s ease;
+}
+
+.toggle-switch input:checked ~ .toggle-track {
+  background: rgba(255,112,67,0.3);
+  border-color: #ff7043;
+}
+
+.toggle-switch input:checked ~ .toggle-track .toggle-thumb {
+  transform: translateX(20px);
+  background: #ff7043;
+}
+
+.toggle-hint {
+  font-size: 0.78rem;
+  color: #888;
+  margin: 0;
+}
+
+.toggle-hint strong {
+  color: #ff8a65;
+}
+

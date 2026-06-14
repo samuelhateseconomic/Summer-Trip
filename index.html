@@ -54,7 +54,7 @@
         <p class="section-subtitle text-center">Click any stop to see its highlights and jump to that day's detailed plan.</p>
 
         <div class="map-wrapper">
-          <svg viewBox="0 0 1020 270" class="route-map-svg" id="route-map-svg">
+          <svg viewBox="0 -52 1020 322" class="route-map-svg" id="route-map-svg">
             <defs>
               <!-- Outbound gradient: Orange → Green → Blue -->
               <linearGradient id="outbound-gradient" x1="0%" y1="100%" x2="100%" y2="0%">
@@ -75,9 +75,16 @@
             </defs>
 
             <!-- ─── Shadow Paths ─── -->
-            <!-- Outbound shadow -->
-            <path d="M 90,215 C 155,172 198,138 248,122 C 310,102 350,72 395,65 Q 492,58 598,56"
+            <!-- SA → Kings Canyon shadow (always) -->
+            <path d="M 90,215 C 155,172 198,138 248,122 C 310,102 350,72 395,65"
                   fill="none" stroke="#1d2e24" stroke-width="10" stroke-linecap="round"/>
+            <!-- KC → Tahoe direct shadow -->
+            <path id="shadow-kc-tahoe" d="M 395,65 Q 492,58 598,56"
+                  fill="none" stroke="#1d2e24" stroke-width="10" stroke-linecap="round"/>
+            <!-- KC → Burney → Tahoe arc shadow (hidden until toggle ON) -->
+            <path id="shadow-kc-burney" d="M 395,65 Q 440,8 493,-18 Q 548,8 598,56"
+                  fill="none" stroke="#1d2e24" stroke-width="10" stroke-linecap="round"
+                  style="display:none;"/>
             <!-- Return shadow -->
             <path d="M 598,56 C 710,68 765,98 803,132 C 845,172 882,205 920,218"
                   fill="none" stroke="#1d2e24" stroke-width="10" stroke-linecap="round"/>
@@ -86,16 +93,30 @@
                   fill="none" stroke="rgba(255,255,255,0.07)" stroke-width="2"
                   stroke-dasharray="10,7" stroke-linecap="round"/>
 
-            <!-- ─── Active Paths (animated) ─── -->
-            <path id="outbound-route"
-                  d="M 90,215 C 155,172 198,138 248,122 C 310,102 350,72 395,65 Q 492,58 598,56"
+            <!-- ─── Active Paths (animated, split into segments) ─── -->
+            <!-- Segment 1: Santa Ana → Sequoia → Kings Canyon -->
+            <path id="outbound-sa-kc"
+                  d="M 90,215 C 155,172 198,138 248,122 C 310,102 350,72 395,65"
                   fill="none" stroke="url(#outbound-gradient)" stroke-width="6"
-                  stroke-linecap="round" stroke-dasharray="900" stroke-dashoffset="0"
+                  stroke-linecap="round"
                   style="transition: stroke-dashoffset 0.7s cubic-bezier(0.4,0,0.2,1);"/>
+            <!-- Segment 2a: KC → Tahoe (DIRECT, default) -->
+            <path id="outbound-kc-tahoe"
+                  d="M 395,65 Q 492,58 598,56"
+                  fill="none" stroke="url(#outbound-gradient)" stroke-width="6"
+                  stroke-linecap="round"
+                  style="transition: stroke-dashoffset 0.7s cubic-bezier(0.4,0,0.2,1);"/>
+            <!-- Segment 2b: KC → Burney Falls → Tahoe (BURNEY ARC, hidden by default) -->
+            <path id="outbound-kc-burney"
+                  d="M 395,65 Q 440,8 493,-18 Q 548,8 598,56"
+                  fill="none" stroke="url(#outbound-gradient)" stroke-width="6"
+                  stroke-linecap="round"
+                  style="display:none; transition: stroke-dashoffset 0.7s cubic-bezier(0.4,0,0.2,1);"/>
+            <!-- Return: Lake Tahoe → Mammoth → Home -->
             <path id="return-route"
                   d="M 598,56 C 710,68 765,98 803,132 C 845,172 882,205 920,218"
                   fill="none" stroke="url(#return-gradient)" stroke-width="6"
-                  stroke-linecap="round" stroke-dasharray="600" stroke-dashoffset="600"
+                  stroke-linecap="round"
                   style="transition: stroke-dashoffset 0.7s cubic-bezier(0.4,0,0.2,1);"/>
 
             <!-- ─── Distance Labels ─── -->
@@ -109,10 +130,20 @@
               <rect x="-52" y="-18" width="104" height="26" rx="13" fill="#1b2e22" stroke="#81c784" stroke-width="1"/>
               <text text-anchor="middle" fill="#a5d6a7" font-size="11" font-weight="600" y="-1">30 mi | ~1.2h</text>
             </g>
-            <!-- Kings Canyon → Lake Tahoe -->
-            <g class="path-label" transform="translate(496,46)">
+            <!-- KC → Tahoe DIRECT label (default visible) -->
+            <g class="path-label" id="label-kc-tahoe-direct" transform="translate(496,46)">
               <rect x="-62" y="-18" width="124" height="26" rx="13" fill="#1b2e22" stroke="#0288d1" stroke-width="1"/>
               <text text-anchor="middle" fill="#29b6f6" font-size="11" font-weight="600" y="-1">~240 mi | ~5h</text>
+            </g>
+            <!-- KC → Burney label (hidden by default) -->
+            <g class="path-label" id="label-kc-burney" transform="translate(435,25)" style="display:none;">
+              <rect x="-52" y="-16" width="104" height="24" rx="12" fill="#1b2e22" stroke="#ff7043" stroke-width="1"/>
+              <text text-anchor="middle" fill="#ff8a65" font-size="10" font-weight="600" y="-1">~150 mi north</text>
+            </g>
+            <!-- Burney → Tahoe label (hidden by default) -->
+            <g class="path-label" id="label-burney-tahoe" transform="translate(553,25)" style="display:none;">
+              <rect x="-52" y="-16" width="104" height="24" rx="12" fill="#1b2e22" stroke="#ff7043" stroke-width="1"/>
+              <text text-anchor="middle" fill="#ff8a65" font-size="10" font-weight="600" y="-1">~130 mi south</text>
             </g>
             <!-- Lake Tahoe → Mammoth -->
             <g class="path-label" transform="translate(706,62)">
@@ -169,6 +200,15 @@
               <circle r="6" fill="#ffa726"/>
               <text y="32" text-anchor="middle" fill="#fff" font-size="12" font-weight="700">Mammoth Lakes</text>
               <text y="46" text-anchor="middle" fill="#888" font-size="10" font-weight="500">Day 4 Return Stopover</text>
+            </g>
+
+            <!-- Node: Burney Falls (Optional, hidden by default) -->
+            <g class="map-node" id="node-burney" transform="translate(493, -18)" data-day="2"
+               style="display:none; cursor:pointer;">
+              <circle r="13" fill="#16251b" stroke="#ff7043" stroke-width="3"/>
+              <circle r="5" fill="#ff7043"/>
+              <text y="25" text-anchor="middle" fill="#fff" font-size="11" font-weight="700">Burney Falls</text>
+              <text y="38" text-anchor="middle" fill="#888" font-size="9" font-weight="500">Optional Detour</text>
             </g>
 
             <!-- Return "Santa Ana" endpoint -->
@@ -353,6 +393,19 @@
                         <div class="alert alert-warning">
                           <strong>Trade-off:</strong> Adds ~4 hours of driving (~340 mi round trip) vs. the direct Tahoe route. However, it clears Sunday completely for a relaxed Tahoe day.
                         </div>
+                        <!-- Burney Route Toggle -->
+                        <div class="burney-toggle-wrapper" style="margin-top:14px;">
+                          <label class="burney-toggle-label" for="toggle-burney">
+                            <span>Add Burney Falls to route map</span>
+                            <div class="toggle-switch">
+                              <input type="checkbox" id="toggle-burney">
+                              <span class="toggle-track">
+                                <span class="toggle-thumb"></span>
+                              </span>
+                            </div>
+                          </label>
+                          <p class="toggle-hint" id="burney-toggle-hint">Route map shows: <strong id="burney-route-label">Direct KC → Tahoe</strong></p>
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -419,8 +472,18 @@
                   <div class="timeline-item">
                     <div class="timeline-time">10:30 AM</div>
                     <div class="timeline-content">
-                      <h4>Eagle Falls & Emerald Bay Hike</h4>
-                      <p>Drive to Emerald Bay State Park. Hike the Eagle Falls Trail — a spectacular overlook of Tahoe's most brilliant teal inlet and Fannette Island sitting alone in the bay. The falls thunder alongside you on the climb up.</p>
+                      <h4>Eagle Falls &amp; Emerald Bay <span class="optional-tag">Optional · ~2h extra drive</span></h4>
+                      <div class="option-card" style="margin-top:8px;">
+                        <div class="option-header">
+                          <span class="option-badge">Optional Hike</span>
+                          <h4>Eagle Falls Trail</h4>
+                        </div>
+                        <p>Emerald Bay State Park is located on the <strong>west shore of Lake Tahoe (~15 miles from South Lake Tahoe)</strong> — around a 30-minute drive each way on winding scenic roads. Budget ~2 extra hours total for the round trip and the hike itself.</p>
+                        <p style="margin-top:8px;">The reward: a spectacular overlook of Tahoe's most brilliant teal inlet and Fannette Island sitting alone in the bay. The falls thunder alongside you on the climb up.</p>
+                        <div class="alert alert-warning" style="margin-top:10px;">
+                          <strong>Note:</strong> If your group prefers a more relaxed Sunday, skip the drive and enjoy kayaking or paddleboarding directly at the South Shore instead.
+                        </div>
+                      </div>
                     </div>
                   </div>
                   <div class="timeline-item">
