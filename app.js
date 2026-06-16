@@ -287,17 +287,6 @@ document.addEventListener('DOMContentLoaded', () => {
     animateToNode(nodeId);
   }
 
-  // ═══════════════════════════════════════════════
-  // PACKING CHECKLIST + PROGRESS BARS
-  // ═══════════════════════════════════════════════
-  const checklists = document.querySelectorAll('.checklist-items');
-  const progressBars = {
-    essentials: { fill: document.getElementById('fill-essentials'), text: document.getElementById('text-essentials') },
-    food:       { fill: document.getElementById('fill-food'),       text: document.getElementById('text-food') },
-    apparel:    { fill: document.getElementById('fill-apparel'),    text: document.getElementById('text-apparel') }
-  };
-
-  restoreChecklistState();
 
   // ═══════════════════════════════════════════════
   // AUTHENTICATION & LOGIN MODAL
