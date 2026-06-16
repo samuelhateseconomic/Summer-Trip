@@ -350,6 +350,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const firebaseConfig = {
     apiKey: "AIzaSyB55d2f1DgS2QHKz-wUwI1eb4HsMWOGiAA",
     authDomain: "summertrip2026-97be2.firebaseapp.com",
+    databaseURL: "https://summertrip2026-97be2-default-rtdb.firebaseio.com",
     projectId: "summertrip2026-97be2",
     storageBucket: "summertrip2026-97be2.firebasestorage.app",
     messagingSenderId: "937428860714",
@@ -357,9 +358,13 @@ document.addEventListener('DOMContentLoaded', () => {
     measurementId: "G-6RPBM53YJ9"
   };
 
-  // Initialize Firebase
-  firebase.initializeApp(firebaseConfig);
-  const db = firebase.database();
+  let db = null;
+  try {
+    firebase.initializeApp(firebaseConfig);
+    db = firebase.database();
+  } catch (e) {
+    console.warn('Firebase init failed, falling back to localStorage:', e);
+  }
 
   // ═══════════════════════════════════════════════
   // PACKING CHECKLIST + PROGRESS BARS + CUSTOM ITEMS
@@ -374,18 +379,13 @@ document.addEventListener('DOMContentLoaded', () => {
   applyAuthState();
 
   function attachCheckboxListener(cb) {
-    // Remove old listeners to avoid duplicates if appending custom items dynamically
-    const newCb = cb.cloneNode(true);
-    cb.parentNode.replaceChild(newCb, cb);
-
-    newCb.addEventListener('change', () => {
+    cb.addEventListener('change', () => {
       if (!isAuthenticated) {
-        newCb.checked = !newCb.checked; // revert
+        cb.checked = !cb.checked; // revert
         loginModal.style.display = 'flex';
         return;
       }
-      // Save state to Firebase
-      db.ref('checklist_state/' + newCb.id).set(newCb.checked);
+      saveChecklistState();
       updateAllProgress();
     });
   }
@@ -405,17 +405,48 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // Restore checklist state from Firebase
-  db.ref('checklist_state').on('value', (snapshot) => {
-    const state = snapshot.val();
-    if (state) {
-      Object.keys(state).forEach(id => {
-        const cb = document.getElementById(id);
-        if (cb) cb.checked = state[id];
-      });
-      updateAllProgress();
+  function saveChecklistState() {
+    const state = {};
+    document.querySelectorAll('.checklist-items input[type="checkbox"]').forEach(cb => {
+      state[cb.id] = cb.checked;
+    });
+    // Save to Firebase if available, always save to localStorage as backup
+    localStorage.setItem('sierra_ascent_loop_v2', JSON.stringify(state));
+    if (db) {
+      try { db.ref('checklist_state').set(state); } catch(e) { /* fallback */ }
     }
-  });
+  }
+
+  function restoreChecklistState() {
+    const saved = localStorage.getItem('sierra_ascent_loop_v2');
+    if (saved) {
+      try {
+        const state = JSON.parse(saved);
+        Object.keys(state).forEach(id => {
+          const cb = document.getElementById(id);
+          if (cb) cb.checked = state[id];
+        });
+      } catch (e) { /* ignore parse errors */ }
+    }
+    updateAllProgress();
+  }
+
+  // Restore from localStorage immediately
+  restoreChecklistState();
+
+  // Then listen for Firebase updates (overrides localStorage if available)
+  if (db) {
+    db.ref('checklist_state').on('value', (snapshot) => {
+      const state = snapshot.val();
+      if (state) {
+        Object.keys(state).forEach(id => {
+          const cb = document.getElementById(id);
+          if (cb) cb.checked = state[id];
+        });
+        updateAllProgress();
+      }
+    });
+  }
 
   // ── Custom Items Logic ──
   function appendCustomItemDOM(targetListId, itemId, text) {
@@ -440,12 +471,14 @@ document.addEventListener('DOMContentLoaded', () => {
     applyAuthState(); // disable if not logged in
   }
 
-  // Load custom items from Firebase in real-time
-  db.ref('custom_items').on('child_added', (snapshot) => {
-    const item = snapshot.val();
-    appendCustomItemDOM(item.targetList, item.id, item.text);
-    updateAllProgress();
-  });
+  // Load custom items from Firebase in real-time (if available)
+  if (db) {
+    db.ref('custom_items').on('child_added', (snapshot) => {
+      const item = snapshot.val();
+      appendCustomItemDOM(item.targetList, item.id, item.text);
+      updateAllProgress();
+    });
+  }
 
   document.querySelectorAll('.btn-add-item').forEach(btn => {
     btn.addEventListener('click', () => {
@@ -457,12 +490,15 @@ document.addEventListener('DOMContentLoaded', () => {
       
       if (text) {
         const itemId = 'custom_' + Date.now();
-        // Save to Firebase (child_added listener will render it for us and everyone else)
-        db.ref('custom_items').push({
-          id: itemId,
-          text: text,
-          targetList: targetListId
-        });
+        appendCustomItemDOM(targetListId, itemId, text);
+        // Save to Firebase if available
+        if (db) {
+          db.ref('custom_items').push({
+            id: itemId,
+            text: text,
+            targetList: targetListId
+          });
+        }
         input.value = '';
       }
     });
