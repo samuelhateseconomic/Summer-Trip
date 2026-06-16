@@ -1168,3 +1168,83 @@ section:nth-child(even) {
   color: #ff8a65;
 }
 
+/* ══════════════════════════════════
+   LOGIN MODAL & ADD ITEM UI
+════════════════════════════════════ */
+.modal-overlay {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.85);
+  backdrop-filter: blur(8px);
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-box {
+  background: #1e3325;
+  border: 1px solid rgba(255,255,255,0.1);
+  padding: 24px;
+  border-radius: 12px;
+  width: 90%;
+  max-width: 320px;
+  text-align: center;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+}
+
+.login-input {
+  width: 100%;
+  padding: 10px 12px;
+  margin-bottom: 12px;
+  border-radius: 6px;
+  border: 1px solid rgba(255,255,255,0.2);
+  background: rgba(0,0,0,0.3);
+  color: #fff;
+  font-family: 'Inter', sans-serif;
+  outline: none;
+}
+
+.login-input:focus {
+  border-color: #ff7043;
+}
+
+.add-item-form {
+  display: flex;
+  gap: 8px;
+  margin-top: 14px;
+  padding-top: 14px;
+  border-top: 1px dashed rgba(255,255,255,0.1);
+}
+
+.add-item-input {
+  flex: 1;
+  padding: 8px 12px;
+  border-radius: 6px;
+  border: 1px solid rgba(255,255,255,0.2);
+  background: rgba(0,0,0,0.2);
+  color: #fff;
+  font-family: 'Inter', sans-serif;
+  outline: none;
+  font-size: 0.85rem;
+}
+
+.add-item-input:focus {
+  border-color: #ff7043;
+}
+
+.btn-add-item {
+  background: #ff7043;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  width: 36px;
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 1.2rem;
+  transition: background 0.2s;
+}
+
+.btn-add-item:hover {
+  background: #f4511e;
+}

@@ -299,12 +299,90 @@ document.addEventListener('DOMContentLoaded', () => {
 
   restoreChecklistState();
 
-  document.querySelectorAll('.checklist-items input[type="checkbox"]').forEach(cb => {
+  // ═══════════════════════════════════════════════
+  // AUTHENTICATION & LOGIN MODAL
+  // ═══════════════════════════════════════════════
+  let isAuthenticated = sessionStorage.getItem('authenticated') === 'true';
+  const loginModal = document.getElementById('login-modal');
+  const btnShowLogin = document.getElementById('btn-show-login');
+  const btnLoginSubmit = document.getElementById('btn-login-submit');
+  const btnLoginCancel = document.getElementById('btn-login-cancel');
+  const loginUser = document.getElementById('login-username');
+  const loginPass = document.getElementById('login-password');
+  const loginError = document.getElementById('login-error');
+  const addItemForms = document.querySelectorAll('.add-item-form');
+
+  function applyAuthState() {
+    if (isAuthenticated) {
+      if (btnShowLogin) btnShowLogin.style.display = 'none';
+      addItemForms.forEach(form => form.style.display = 'flex');
+      document.querySelectorAll('.checklist-items input[type="checkbox"]').forEach(cb => {
+        cb.disabled = false;
+      });
+    } else {
+      if (btnShowLogin) btnShowLogin.style.display = 'inline';
+      addItemForms.forEach(form => form.style.display = 'none');
+      document.querySelectorAll('.checklist-items input[type="checkbox"]').forEach(cb => {
+        cb.disabled = true;
+      });
+    }
+  }
+
+  if (btnShowLogin) {
+    btnShowLogin.addEventListener('click', () => {
+      loginModal.style.display = 'flex';
+      loginError.style.display = 'none';
+    });
+  }
+
+  if (btnLoginCancel) {
+    btnLoginCancel.addEventListener('click', () => {
+      loginModal.style.display = 'none';
+    });
+  }
+
+  if (btnLoginSubmit) {
+    btnLoginSubmit.addEventListener('click', () => {
+      // Hardcoded auth as requested
+      if (loginUser.value.trim() === 'northcalsummertrip2026' && loginPass.value === 'YouAreGei17') {
+        isAuthenticated = true;
+        sessionStorage.setItem('authenticated', 'true');
+        loginModal.style.display = 'none';
+        applyAuthState();
+      } else {
+        loginError.style.display = 'block';
+      }
+    });
+  }
+
+  // ═══════════════════════════════════════════════
+  // PACKING CHECKLIST + PROGRESS BARS + CUSTOM ITEMS
+  // ═══════════════════════════════════════════════
+  const checklists = document.querySelectorAll('.checklist-items');
+  const progressBars = {
+    essentials: { fill: document.getElementById('fill-essentials'), text: document.getElementById('text-essentials') },
+    food:       { fill: document.getElementById('fill-food'),       text: document.getElementById('text-food') },
+    apparel:    { fill: document.getElementById('fill-apparel'),    text: document.getElementById('text-apparel') }
+  };
+
+  // Load custom items first before restoring check states
+  loadCustomItems();
+  restoreChecklistState();
+  applyAuthState();
+
+  function attachCheckboxListener(cb) {
     cb.addEventListener('change', () => {
+      if (!isAuthenticated) {
+        cb.checked = !cb.checked; // revert
+        loginModal.style.display = 'flex';
+        return;
+      }
       saveChecklistState();
       updateAllProgress();
     });
-  });
+  }
+
+  document.querySelectorAll('.checklist-items input[type="checkbox"]').forEach(attachCheckboxListener);
 
   function updateAllProgress() {
     checklists.forEach(list => {
@@ -340,6 +418,70 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     updateAllProgress();
   }
+
+  // ── Custom Items Logic ──
+  function saveCustomItems() {
+    const customItems = [];
+    document.querySelectorAll('.checklist-items li[data-custom="true"]').forEach(li => {
+      const cb = li.querySelector('input[type="checkbox"]');
+      const textNode = li.querySelector('.item-text');
+      const text = textNode.childNodes[0].textContent.trim();
+      const targetList = li.closest('ul').id;
+      customItems.push({ id: cb.id, text, targetList });
+    });
+    localStorage.setItem('sierra_custom_items', JSON.stringify(customItems));
+  }
+
+  function loadCustomItems() {
+    const saved = localStorage.getItem('sierra_custom_items');
+    if (saved) {
+      try {
+        const items = JSON.parse(saved);
+        items.forEach(item => {
+          appendCustomItemDOM(item.targetList, item.id, item.text);
+        });
+      } catch (e) { /* ignore */ }
+    }
+  }
+
+  function appendCustomItemDOM(targetListId, itemId, text) {
+    const list = document.getElementById(targetListId);
+    if (!list) return;
+
+    const li = document.createElement('li');
+    li.setAttribute('data-custom', 'true');
+    li.innerHTML = `
+      <label class="checkbox-container">
+        <input type="checkbox" id="${itemId}">
+        <span class="checkmark"></span>
+        <span class="item-text">${text} <span class="item-badge info">Added</span></span>
+      </label>
+    `;
+    list.appendChild(li);
+    const cb = li.querySelector('input[type="checkbox"]');
+    attachCheckboxListener(cb);
+  }
+
+  document.querySelectorAll('.btn-add-item').forEach(btn => {
+    btn.addEventListener('click', () => {
+      if (!isAuthenticated) return;
+      const form = btn.parentElement;
+      const input = form.querySelector('.add-item-input');
+      const targetListId = form.getAttribute('data-target');
+      const text = input.value.trim();
+      
+      if (text) {
+        const itemId = 'custom_' + Date.now();
+        appendCustomItemDOM(targetListId, itemId, text);
+        saveCustomItems();
+        updateAllProgress();
+        input.value = '';
+        
+        // Notify user about Firebase
+        console.log('Item saved locally. Note: Firebase integration is needed to sync this across devices.');
+      }
+    });
+  });
 
   // ═══════════════════════════════════════════════
   // CLIPBOARD SHARE COPY

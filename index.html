@@ -603,8 +603,8 @@
     <!-- ══════════════════ PACKING DASHBOARD ══════════════════ -->
     <section class="checklist-section" id="checklist-section">
       <div class="section-container">
-        <h2 class="section-title text-center">Preparation & Packing Dashboard</h2>
-        <p class="section-subtitle text-center">Interactive checklist synced with your friend. Progress is saved locally across sessions.</p>
+        <h2 class="section-title text-center">Expedition Logistics &amp; Packing</h2>
+        <p class="section-subtitle text-center">Track your packing progress below. <button id="btn-show-login" style="background:none; border:none; color:#ff7043; cursor:pointer; font-weight:bold; text-decoration:underline;">Log in to edit.</button></p>
 
         <div class="checklist-grid">
 
@@ -624,7 +624,14 @@
                 </div>
               </div>
             </div>
-            <ul class="checklist-items" data-category="essentials">
+            <ul class="checklist-items" data-category="essentials" id="list-essentials">
+              <li>
+                <label class="checkbox-container">
+                  <input type="checkbox" id="item-caden-car">
+                  <span class="checkmark"></span>
+                  <span class="item-text">Pre-trip: Car check/maintenance (Sat 06/15) <span class="item-badge info">Caden</span></span>
+                </label>
+              </li>
               <li>
                 <label class="checkbox-container">
                   <input type="checkbox" id="item-pass">
@@ -654,6 +661,11 @@
                 </label>
               </li>
             </ul>
+            <!-- Add Item Form (Hidden until Auth) -->
+            <div class="add-item-form" style="display:none;" data-target="list-essentials">
+              <input type="text" placeholder="Add custom item..." class="add-item-input">
+              <button class="btn-add-item">+</button>
+            </div>
           </div>
 
           <!-- Food & Hydration Card -->
@@ -672,7 +684,7 @@
                 </div>
               </div>
             </div>
-            <ul class="checklist-items" data-category="food">
+            <ul class="checklist-items" data-category="food" id="list-food">
               <li>
                 <label class="checkbox-container">
                   <input type="checkbox" id="item-cooler">
@@ -695,6 +707,11 @@
                 </label>
               </li>
             </ul>
+            <!-- Add Item Form (Hidden until Auth) -->
+            <div class="add-item-form" style="display:none;" data-target="list-food">
+              <input type="text" placeholder="Add custom item..." class="add-item-input">
+              <button class="btn-add-item">+</button>
+            </div>
           </div>
 
           <!-- Apparel & Gear Card -->
@@ -713,7 +730,7 @@
                 </div>
               </div>
             </div>
-            <ul class="checklist-items" data-category="apparel">
+            <ul class="checklist-items" data-category="apparel" id="list-apparel">
               <li>
                 <label class="checkbox-container">
                   <input type="checkbox" id="item-clothes">
@@ -757,6 +774,11 @@
                 </label>
               </li>
             </ul>
+            <!-- Add Item Form (Hidden until Auth) -->
+            <div class="add-item-form" style="display:none;" data-target="list-apparel">
+              <input type="text" placeholder="Add custom item..." class="add-item-input">
+              <button class="btn-add-item">+</button>
+            </div>
           </div>
         </div>
       </div>
@@ -813,6 +835,21 @@ Let's do this! 🚗💨 #SierraAscent #Roadtrip #Sequoia #LakeTahoe #Mammoth</pr
         </div>
       </div>
     </section>
+
+    <!-- ══════════════════ LOGIN MODAL ══════════════════ -->
+    <div class="modal-overlay" id="login-modal" style="display:none;">
+      <div class="modal-box">
+        <h3 style="margin-bottom: 12px;">Checklist Access</h3>
+        <p style="font-size: 0.9rem; color: #888; margin-bottom: 20px;">Please log in to edit and add items to the shared trip checklist.</p>
+        <input type="text" id="login-username" placeholder="Username" class="login-input">
+        <input type="password" id="login-password" placeholder="Password" class="login-input">
+        <p id="login-error" style="color: #ff5252; font-size: 0.8rem; display: none; margin-bottom: 10px;">Incorrect username or password.</p>
+        <div style="display:flex; gap: 10px;">
+          <button class="btn btn-primary" id="btn-login-submit" style="flex:1;">Log In</button>
+          <button class="btn" id="btn-login-cancel" style="background:rgba(255,255,255,0.1); flex:1;">Cancel</button>
+        </div>
+      </div>
+    </div>
 
   </main>
 
