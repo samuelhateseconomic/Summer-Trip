@@ -308,12 +308,14 @@ document.addEventListener('DOMContentLoaded', () => {
       document.querySelectorAll('.checklist-items input[type="checkbox"]').forEach(cb => {
         cb.disabled = false;
       });
+      document.querySelectorAll('.item-actions').forEach(a => a.style.display = 'flex');
     } else {
       if (btnShowLogin) btnShowLogin.style.display = 'inline';
       addItemForms.forEach(form => form.style.display = 'none');
       document.querySelectorAll('.checklist-items input[type="checkbox"]').forEach(cb => {
         cb.disabled = true;
       });
+      document.querySelectorAll('.item-actions').forEach(a => a.style.display = 'none');
     }
   }
 
@@ -448,8 +450,127 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
+  // ── Name Assignment Logic ──
+  function createItemActions(li, itemId, isCustom, firebaseKey) {
+    // Wrap existing label in a row div
+    const label = li.querySelector('label');
+    const row = document.createElement('div');
+    row.className = 'checklist-item-row';
+    li.insertBefore(row, label);
+    row.appendChild(label);
+
+    const actions = document.createElement('div');
+    actions.className = 'item-actions';
+
+    // Assign Name button
+    const assignBtn = document.createElement('button');
+    assignBtn.className = 'btn-assign-name';
+    assignBtn.textContent = '+ Name';
+    assignBtn.setAttribute('data-item-id', itemId);
+    actions.appendChild(assignBtn);
+
+    // Delete button (only for custom items)
+    if (isCustom) {
+      const delBtn = document.createElement('button');
+      delBtn.className = 'btn-delete-item';
+      delBtn.innerHTML = '&times;';
+      delBtn.title = 'Delete this item';
+      delBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        if (!isAuthenticated) return;
+        li.remove();
+        // Remove from Firebase
+        if (db && firebaseKey) {
+          db.ref('custom_items/' + firebaseKey).remove();
+        }
+        // Remove name assignment and checklist state
+        if (db) {
+          db.ref('name_assignments/' + itemId).remove();
+          db.ref('checklist_state/' + itemId).remove();
+        }
+        updateAllProgress();
+      });
+      actions.appendChild(delBtn);
+    }
+
+    row.appendChild(actions);
+
+    // Name popover
+    const popover = document.createElement('div');
+    popover.className = 'name-input-popover';
+    popover.innerHTML = `
+      <input type="text" placeholder="Your name..." maxlength="20">
+      <div class="name-actions">
+        <button class="btn-name-save">Save</button>
+        <button class="btn-name-clear">Clear</button>
+      </div>
+    `;
+    li.appendChild(popover);
+
+    assignBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      if (!isAuthenticated) {
+        loginModal.style.display = 'flex';
+        return;
+      }
+      // Close any other open popovers
+      document.querySelectorAll('.name-input-popover').forEach(p => p.style.display = 'none');
+      popover.style.display = 'block';
+      popover.querySelector('input').focus();
+    });
+
+    popover.querySelector('.btn-name-save').addEventListener('click', (e) => {
+      e.stopPropagation();
+      const name = popover.querySelector('input').value.trim();
+      if (name) {
+        assignBtn.textContent = name;
+        assignBtn.classList.add('has-name');
+        if (db) {
+          db.ref('name_assignments/' + itemId).set(name);
+        }
+      }
+      popover.style.display = 'none';
+    });
+
+    popover.querySelector('.btn-name-clear').addEventListener('click', (e) => {
+      e.stopPropagation();
+      assignBtn.textContent = '+ Name';
+      assignBtn.classList.remove('has-name');
+      popover.querySelector('input').value = '';
+      if (db) {
+        db.ref('name_assignments/' + itemId).remove();
+      }
+      popover.style.display = 'none';
+    });
+
+    // Close popover on Enter key
+    popover.querySelector('input').addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        popover.querySelector('.btn-name-save').click();
+      }
+    });
+
+    return assignBtn;
+  }
+
+  // Add actions to all existing (static) checklist items
+  document.querySelectorAll('.checklist-items li').forEach(li => {
+    const cb = li.querySelector('input[type="checkbox"]');
+    if (cb) createItemActions(li, cb.id, false, null);
+  });
+
+  // Close popovers when clicking outside
+  document.addEventListener('click', (e) => {
+    if (!e.target.closest('.name-input-popover') && !e.target.closest('.btn-assign-name')) {
+      document.querySelectorAll('.name-input-popover').forEach(p => p.style.display = 'none');
+    }
+  });
+
   // ── Custom Items Logic ──
-  function appendCustomItemDOM(targetListId, itemId, text) {
+  // Track Firebase keys for custom items so we can delete them
+  const customItemKeys = {};
+
+  function appendCustomItemDOM(targetListId, itemId, text, firebaseKey) {
     const list = document.getElementById(targetListId);
     if (!list) return;
 
@@ -468,6 +589,11 @@ document.addEventListener('DOMContentLoaded', () => {
     list.appendChild(li);
     const cb = li.querySelector('input[type="checkbox"]');
     attachCheckboxListener(cb);
+
+    // Add name + delete actions
+    createItemActions(li, itemId, true, firebaseKey);
+    if (firebaseKey) customItemKeys[itemId] = firebaseKey;
+
     applyAuthState(); // disable if not logged in
   }
 
@@ -475,8 +601,19 @@ document.addEventListener('DOMContentLoaded', () => {
   if (db) {
     db.ref('custom_items').on('child_added', (snapshot) => {
       const item = snapshot.val();
-      appendCustomItemDOM(item.targetList, item.id, item.text);
+      appendCustomItemDOM(item.targetList, item.id, item.text, snapshot.key);
       updateAllProgress();
+    });
+
+    // Handle remote deletions
+    db.ref('custom_items').on('child_removed', (snapshot) => {
+      const item = snapshot.val();
+      const el = document.getElementById(item.id);
+      if (el) {
+        const li = el.closest('li');
+        if (li) li.remove();
+        updateAllProgress();
+      }
     });
   }
 
@@ -490,19 +627,36 @@ document.addEventListener('DOMContentLoaded', () => {
       
       if (text) {
         const itemId = 'custom_' + Date.now();
-        appendCustomItemDOM(targetListId, itemId, text);
-        // Save to Firebase if available
+        // Save to Firebase if available (child_added will render it)
         if (db) {
           db.ref('custom_items').push({
             id: itemId,
             text: text,
             targetList: targetListId
           });
+        } else {
+          appendCustomItemDOM(targetListId, itemId, text, null);
         }
         input.value = '';
       }
     });
   });
+
+  // ── Load Name Assignments from Firebase ──
+  if (db) {
+    db.ref('name_assignments').on('value', (snapshot) => {
+      const names = snapshot.val();
+      if (names) {
+        Object.keys(names).forEach(itemId => {
+          const btn = document.querySelector(`.btn-assign-name[data-item-id="${itemId}"]`);
+          if (btn) {
+            btn.textContent = names[itemId];
+            btn.classList.add('has-name');
+          }
+        });
+      }
+    });
+  }
 
   // ═══════════════════════════════════════════════
   // CLIPBOARD SHARE COPY

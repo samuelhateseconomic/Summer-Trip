@@ -1248,3 +1248,126 @@ section:nth-child(even) {
 .btn-add-item:hover {
   background: #f4511e;
 }
+
+/* ── Checklist Item Actions (Name + Delete) ── */
+.checklist-item-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.checklist-item-row label {
+  flex: 1;
+  min-width: 0;
+}
+
+.item-actions {
+  display: none; /* hidden until authenticated */
+  align-items: center;
+  gap: 4px;
+  flex-shrink: 0;
+}
+
+.btn-assign-name {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px dashed rgba(255, 255, 255, 0.2);
+  color: #aaa;
+  font-size: 0.72rem;
+  padding: 3px 8px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+
+.btn-assign-name:hover {
+  border-color: #ff7043;
+  color: #ff7043;
+}
+
+.btn-assign-name.has-name {
+  background: rgba(255, 112, 67, 0.15);
+  border: 1px solid rgba(255, 112, 67, 0.4);
+  color: #ff8a65;
+}
+
+.btn-delete-item {
+  background: none;
+  border: none;
+  color: #555;
+  font-size: 1rem;
+  cursor: pointer;
+  padding: 2px 6px;
+  border-radius: 4px;
+  transition: all 0.2s;
+  line-height: 1;
+}
+
+.btn-delete-item:hover {
+  color: #ff5252;
+  background: rgba(255, 82, 82, 0.15);
+}
+
+/* Name input popover */
+.name-input-popover {
+  display: none;
+  position: absolute;
+  right: 0;
+  top: 100%;
+  margin-top: 4px;
+  background: #1e3325;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 8px;
+  padding: 10px;
+  z-index: 100;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+  min-width: 180px;
+}
+
+.name-input-popover input {
+  width: 100%;
+  padding: 6px 10px;
+  border-radius: 5px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: rgba(0, 0, 0, 0.3);
+  color: #fff;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.82rem;
+  outline: none;
+  margin-bottom: 6px;
+}
+
+.name-input-popover input:focus {
+  border-color: #ff7043;
+}
+
+.name-input-popover .name-actions {
+  display: flex;
+  gap: 6px;
+}
+
+.name-input-popover .btn-name-save {
+  flex: 1;
+  padding: 4px 0;
+  background: #ff7043;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.78rem;
+  font-weight: 600;
+}
+
+.name-input-popover .btn-name-clear {
+  padding: 4px 8px;
+  background: rgba(255, 255, 255, 0.08);
+  color: #aaa;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.78rem;
+}
+
+li {
+  position: relative;
+}
