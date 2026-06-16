@@ -473,7 +473,7 @@ document.addEventListener('DOMContentLoaded', () => {
           <button class="btn-save-edit" id="btn-save-edit">Save</button>
           <button class="btn-cancel-edit" id="btn-cancel-edit">Cancel</button>
         </div>
-        <button class="btn-delete-edit" id="btn-delete-edit" style="display:none;">Delete This Item</button>
+        <button class="btn-delete-edit" id="btn-delete-edit">Delete This Item</button>
       </div>
     `;
     document.body.appendChild(editModalEl);
@@ -489,31 +489,16 @@ document.addEventListener('DOMContentLoaded', () => {
       const newText = editModalEl.querySelector('#edit-task-text').value.trim();
       const newName = editModalEl.querySelector('#edit-name-tag').value.trim();
 
-      // Update task text in DOM
       const cb = document.getElementById(editingItemId);
-      if (cb && newText) {
-        const itemTextSpan = cb.closest('label').querySelector('.item-text');
-        if (itemTextSpan) {
-          // Preserve existing badge if any, but update the text content
-          const badge = itemTextSpan.querySelector('.item-badge');
-          const badgeHTML = badge ? badge.outerHTML : '';
-          itemTextSpan.innerHTML = newText + ' ' + badgeHTML;
-        }
-      }
+      if (!cb) return;
+      const itemTextSpan = cb.closest('label').querySelector('.item-text');
+      if (!itemTextSpan) return;
 
-      // Update name tag in DOM
-      const li = cb ? cb.closest('li') : null;
-      if (li) {
-        const nameTag = li.querySelector('.item-name-tag');
-        if (nameTag) {
-          if (newName) {
-            nameTag.textContent = newName;
-            nameTag.classList.add('visible');
-          } else {
-            nameTag.textContent = '';
-            nameTag.classList.remove('visible');
-          }
-        }
+      // Update task text + badge inline
+      if (newName) {
+        itemTextSpan.innerHTML = (newText || '') + ' <span class="item-badge info">' + newName + '</span>';
+      } else {
+        itemTextSpan.innerHTML = (newText || '');
       }
 
       // Save name to Firebase
@@ -568,29 +553,35 @@ document.addEventListener('DOMContentLoaded', () => {
     editingFirebaseKey = firebaseKey;
 
     const cb = document.getElementById(itemId);
-    const li = cb ? cb.closest('li') : null;
 
-    // Populate task text
+    // Populate task text (text content without the badge)
     const itemTextSpan = cb ? cb.closest('label').querySelector('.item-text') : null;
     let currentText = '';
     if (itemTextSpan) {
-      // Get text without the badge
-      currentText = itemTextSpan.childNodes[0] ? itemTextSpan.childNodes[0].textContent.trim() : itemTextSpan.textContent.trim();
+      // Clone and remove badge to get pure text
+      const clone = itemTextSpan.cloneNode(true);
+      const badge = clone.querySelector('.item-badge');
+      if (badge) badge.remove();
+      currentText = clone.textContent.trim();
     }
     modal.querySelector('#edit-task-text').value = currentText;
 
-    // Populate name
-    const nameTag = li ? li.querySelector('.item-name-tag') : null;
-    modal.querySelector('#edit-name-tag').value = (nameTag && nameTag.classList.contains('visible')) ? nameTag.textContent : '';
+    // Populate assigned name from the existing inline badge
+    let currentName = '';
+    if (itemTextSpan) {
+      const badge = itemTextSpan.querySelector('.item-badge');
+      if (badge) currentName = badge.textContent.trim();
+    }
+    modal.querySelector('#edit-name-tag').value = currentName;
 
-    // Show/hide delete button (only custom items can be deleted)
-    modal.querySelector('#btn-delete-edit').style.display = isCustom ? 'block' : 'none';
+    // Delete is available for ALL items
+    modal.querySelector('#btn-delete-edit').style.display = 'block';
 
     modal.style.display = 'flex';
     modal.querySelector('#edit-task-text').focus();
   }
 
-  // ── Build item UI: name tag below + edit icon on right ──
+  // ── Build item UI: edit icon on right ──
   function setupItemUI(li, itemId, isCustom, firebaseKey) {
     const label = li.querySelector('label');
 
@@ -614,12 +605,6 @@ document.addEventListener('DOMContentLoaded', () => {
       openEditModal(itemId, isCustom, firebaseKey);
     });
     row.appendChild(editBtn);
-
-    // Name tag below the task
-    const nameTag = document.createElement('div');
-    nameTag.className = 'item-name-tag';
-    nameTag.setAttribute('data-item-id', itemId);
-    li.appendChild(nameTag);
   }
 
   // Add UI to all existing (static) checklist items
@@ -651,7 +636,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const cb = li.querySelector('input[type="checkbox"]');
     attachCheckboxListener(cb);
 
-    // Add edit icon + name tag
+    // Add edit icon
     setupItemUI(li, itemId, true, firebaseKey);
     if (firebaseKey) customItemKeys[itemId] = firebaseKey;
 
@@ -706,15 +691,19 @@ document.addEventListener('DOMContentLoaded', () => {
   if (db) {
     db.ref('name_assignments').on('value', (snapshot) => {
       const names = snapshot.val() || {};
-      // Update all name tags
-      document.querySelectorAll('.item-name-tag').forEach(tag => {
-        const itemId = tag.getAttribute('data-item-id');
+      // Update inline badges for all items that have a name assignment
+      document.querySelectorAll('.checklist-items input[type="checkbox"]').forEach(cb => {
+        const itemId = cb.id;
+        const itemTextSpan = cb.closest('label').querySelector('.item-text');
+        if (!itemTextSpan) return;
+
         if (names[itemId]) {
-          tag.textContent = names[itemId];
-          tag.classList.add('visible');
-        } else {
-          tag.textContent = '';
-          tag.classList.remove('visible');
+          // Get pure text (remove existing badge)
+          const clone = itemTextSpan.cloneNode(true);
+          const oldBadge = clone.querySelector('.item-badge');
+          if (oldBadge) oldBadge.remove();
+          const pureText = clone.textContent.trim();
+          itemTextSpan.innerHTML = pureText + ' <span class="item-badge info">' + names[itemId] + '</span>';
         }
       });
     });

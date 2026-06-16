@@ -1261,23 +1261,6 @@ section:nth-child(even) {
   min-width: 0;
 }
 
-.item-name-tag {
-  display: none;
-  font-size: 0.73rem;
-  color: #ff8a65;
-  padding: 2px 0 2px 30px;
-  opacity: 0.85;
-}
-
-.item-name-tag::before {
-  content: '↳ ';
-  opacity: 0.5;
-}
-
-.item-name-tag.visible {
-  display: block;
-}
-
 .btn-edit-item {
   background: none;
   border: 1px solid rgba(255, 255, 255, 0.1);
