@@ -356,6 +356,23 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // ═══════════════════════════════════════════════
+  // FIREBASE CONFIGURATION
+  // ═══════════════════════════════════════════════
+  const firebaseConfig = {
+    apiKey: "AIzaSyB55d2f1DgS2QHKz-wUwI1eb4HsMWOGiAA",
+    authDomain: "summertrip2026-97be2.firebaseapp.com",
+    projectId: "summertrip2026-97be2",
+    storageBucket: "summertrip2026-97be2.firebasestorage.app",
+    messagingSenderId: "937428860714",
+    appId: "1:937428860714:web:0093c19878ff6e9c056853",
+    measurementId: "G-6RPBM53YJ9"
+  };
+
+  // Initialize Firebase
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.database();
+
+  // ═══════════════════════════════════════════════
   // PACKING CHECKLIST + PROGRESS BARS + CUSTOM ITEMS
   // ═══════════════════════════════════════════════
   const checklists = document.querySelectorAll('.checklist-items');
@@ -365,19 +382,21 @@ document.addEventListener('DOMContentLoaded', () => {
     apparel:    { fill: document.getElementById('fill-apparel'),    text: document.getElementById('text-apparel') }
   };
 
-  // Load custom items first before restoring check states
-  loadCustomItems();
-  restoreChecklistState();
   applyAuthState();
 
   function attachCheckboxListener(cb) {
-    cb.addEventListener('change', () => {
+    // Remove old listeners to avoid duplicates if appending custom items dynamically
+    const newCb = cb.cloneNode(true);
+    cb.parentNode.replaceChild(newCb, cb);
+
+    newCb.addEventListener('change', () => {
       if (!isAuthenticated) {
-        cb.checked = !cb.checked; // revert
+        newCb.checked = !newCb.checked; // revert
         loginModal.style.display = 'flex';
         return;
       }
-      saveChecklistState();
+      // Save state to Firebase
+      db.ref('checklist_state/' + newCb.id).set(newCb.checked);
       updateAllProgress();
     });
   }
@@ -397,56 +416,25 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  function saveChecklistState() {
-    const state = {};
-    document.querySelectorAll('.checklist-items input[type="checkbox"]').forEach(cb => {
-      state[cb.id] = cb.checked;
-    });
-    localStorage.setItem('sierra_ascent_loop_v2', JSON.stringify(state));
-  }
-
-  function restoreChecklistState() {
-    const saved = localStorage.getItem('sierra_ascent_loop_v2');
-    if (saved) {
-      try {
-        const state = JSON.parse(saved);
-        Object.keys(state).forEach(id => {
-          const cb = document.getElementById(id);
-          if (cb) cb.checked = state[id];
-        });
-      } catch (e) { /* ignore parse errors */ }
+  // Restore checklist state from Firebase
+  db.ref('checklist_state').on('value', (snapshot) => {
+    const state = snapshot.val();
+    if (state) {
+      Object.keys(state).forEach(id => {
+        const cb = document.getElementById(id);
+        if (cb) cb.checked = state[id];
+      });
+      updateAllProgress();
     }
-    updateAllProgress();
-  }
+  });
 
   // ── Custom Items Logic ──
-  function saveCustomItems() {
-    const customItems = [];
-    document.querySelectorAll('.checklist-items li[data-custom="true"]').forEach(li => {
-      const cb = li.querySelector('input[type="checkbox"]');
-      const textNode = li.querySelector('.item-text');
-      const text = textNode.childNodes[0].textContent.trim();
-      const targetList = li.closest('ul').id;
-      customItems.push({ id: cb.id, text, targetList });
-    });
-    localStorage.setItem('sierra_custom_items', JSON.stringify(customItems));
-  }
-
-  function loadCustomItems() {
-    const saved = localStorage.getItem('sierra_custom_items');
-    if (saved) {
-      try {
-        const items = JSON.parse(saved);
-        items.forEach(item => {
-          appendCustomItemDOM(item.targetList, item.id, item.text);
-        });
-      } catch (e) { /* ignore */ }
-    }
-  }
-
   function appendCustomItemDOM(targetListId, itemId, text) {
     const list = document.getElementById(targetListId);
     if (!list) return;
+
+    // Prevent duplicates
+    if (document.getElementById(itemId)) return;
 
     const li = document.createElement('li');
     li.setAttribute('data-custom', 'true');
@@ -460,7 +448,15 @@ document.addEventListener('DOMContentLoaded', () => {
     list.appendChild(li);
     const cb = li.querySelector('input[type="checkbox"]');
     attachCheckboxListener(cb);
+    applyAuthState(); // disable if not logged in
   }
+
+  // Load custom items from Firebase in real-time
+  db.ref('custom_items').on('child_added', (snapshot) => {
+    const item = snapshot.val();
+    appendCustomItemDOM(item.targetList, item.id, item.text);
+    updateAllProgress();
+  });
 
   document.querySelectorAll('.btn-add-item').forEach(btn => {
     btn.addEventListener('click', () => {
@@ -472,13 +468,13 @@ document.addEventListener('DOMContentLoaded', () => {
       
       if (text) {
         const itemId = 'custom_' + Date.now();
-        appendCustomItemDOM(targetListId, itemId, text);
-        saveCustomItems();
-        updateAllProgress();
+        // Save to Firebase (child_added listener will render it for us and everyone else)
+        db.ref('custom_items').push({
+          id: itemId,
+          text: text,
+          targetList: targetListId
+        });
         input.value = '';
-        
-        // Notify user about Firebase
-        console.log('Item saved locally. Note: Firebase integration is needed to sync this across devices.');
       }
     });
   });
