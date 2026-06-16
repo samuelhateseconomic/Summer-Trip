@@ -308,14 +308,14 @@ document.addEventListener('DOMContentLoaded', () => {
       document.querySelectorAll('.checklist-items input[type="checkbox"]').forEach(cb => {
         cb.disabled = false;
       });
-      document.querySelectorAll('.item-actions').forEach(a => a.style.display = 'flex');
+      document.querySelectorAll('.btn-edit-item').forEach(b => b.style.display = 'inline-block');
     } else {
       if (btnShowLogin) btnShowLogin.style.display = 'inline';
       addItemForms.forEach(form => form.style.display = 'none');
       document.querySelectorAll('.checklist-items input[type="checkbox"]').forEach(cb => {
         cb.disabled = true;
       });
-      document.querySelectorAll('.item-actions').forEach(a => a.style.display = 'none');
+      document.querySelectorAll('.btn-edit-item').forEach(b => b.style.display = 'none');
     }
   }
 
@@ -450,124 +450,185 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // ── Name Assignment Logic ──
-  function createItemActions(li, itemId, isCustom, firebaseKey) {
-    // Wrap existing label in a row div
+  // ── Edit Modal (shared singleton) ──
+  let editModalEl = null;
+  let editingItemId = null;
+  let editingIsCustom = false;
+  let editingFirebaseKey = null;
+
+  function getOrCreateEditModal() {
+    if (editModalEl) return editModalEl;
+    editModalEl = document.createElement('div');
+    editModalEl.className = 'edit-modal-overlay';
+    editModalEl.style.display = 'none';
+    editModalEl.innerHTML = `
+      <div class="edit-modal-box">
+        <h3>Edit Item</h3>
+        <p class="edit-modal-sub">Modify the task details below.</p>
+        <label class="edit-label">Task Description</label>
+        <input type="text" class="edit-input" id="edit-task-text" placeholder="Task description...">
+        <label class="edit-label">Assigned To</label>
+        <input type="text" class="edit-input" id="edit-name-tag" placeholder="Name (leave blank for none)" maxlength="25">
+        <div class="edit-modal-actions">
+          <button class="btn-save-edit" id="btn-save-edit">Save</button>
+          <button class="btn-cancel-edit" id="btn-cancel-edit">Cancel</button>
+        </div>
+        <button class="btn-delete-edit" id="btn-delete-edit" style="display:none;">Delete This Item</button>
+      </div>
+    `;
+    document.body.appendChild(editModalEl);
+
+    // Cancel
+    editModalEl.querySelector('#btn-cancel-edit').addEventListener('click', () => {
+      editModalEl.style.display = 'none';
+    });
+
+    // Save
+    editModalEl.querySelector('#btn-save-edit').addEventListener('click', () => {
+      if (!editingItemId) return;
+      const newText = editModalEl.querySelector('#edit-task-text').value.trim();
+      const newName = editModalEl.querySelector('#edit-name-tag').value.trim();
+
+      // Update task text in DOM
+      const cb = document.getElementById(editingItemId);
+      if (cb && newText) {
+        const itemTextSpan = cb.closest('label').querySelector('.item-text');
+        if (itemTextSpan) {
+          // Preserve existing badge if any, but update the text content
+          const badge = itemTextSpan.querySelector('.item-badge');
+          const badgeHTML = badge ? badge.outerHTML : '';
+          itemTextSpan.innerHTML = newText + ' ' + badgeHTML;
+        }
+      }
+
+      // Update name tag in DOM
+      const li = cb ? cb.closest('li') : null;
+      if (li) {
+        const nameTag = li.querySelector('.item-name-tag');
+        if (nameTag) {
+          if (newName) {
+            nameTag.textContent = newName;
+            nameTag.classList.add('visible');
+          } else {
+            nameTag.textContent = '';
+            nameTag.classList.remove('visible');
+          }
+        }
+      }
+
+      // Save name to Firebase
+      if (db) {
+        if (newName) {
+          db.ref('name_assignments/' + editingItemId).set(newName);
+        } else {
+          db.ref('name_assignments/' + editingItemId).remove();
+        }
+      }
+
+      // Save task text to Firebase (for custom items)
+      if (db && editingIsCustom && editingFirebaseKey && newText) {
+        db.ref('custom_items/' + editingFirebaseKey + '/text').set(newText);
+      }
+
+      editModalEl.style.display = 'none';
+    });
+
+    // Delete
+    editModalEl.querySelector('#btn-delete-edit').addEventListener('click', () => {
+      if (!editingItemId) return;
+      const cb = document.getElementById(editingItemId);
+      if (cb) {
+        const li = cb.closest('li');
+        if (li) li.remove();
+      }
+      // Remove from Firebase
+      if (db && editingIsCustom && editingFirebaseKey) {
+        db.ref('custom_items/' + editingFirebaseKey).remove();
+      }
+      if (db) {
+        db.ref('name_assignments/' + editingItemId).remove();
+        db.ref('checklist_state/' + editingItemId).remove();
+      }
+      updateAllProgress();
+      editModalEl.style.display = 'none';
+    });
+
+    // Close on overlay click
+    editModalEl.addEventListener('click', (e) => {
+      if (e.target === editModalEl) editModalEl.style.display = 'none';
+    });
+
+    return editModalEl;
+  }
+
+  function openEditModal(itemId, isCustom, firebaseKey) {
+    const modal = getOrCreateEditModal();
+    editingItemId = itemId;
+    editingIsCustom = isCustom;
+    editingFirebaseKey = firebaseKey;
+
+    const cb = document.getElementById(itemId);
+    const li = cb ? cb.closest('li') : null;
+
+    // Populate task text
+    const itemTextSpan = cb ? cb.closest('label').querySelector('.item-text') : null;
+    let currentText = '';
+    if (itemTextSpan) {
+      // Get text without the badge
+      currentText = itemTextSpan.childNodes[0] ? itemTextSpan.childNodes[0].textContent.trim() : itemTextSpan.textContent.trim();
+    }
+    modal.querySelector('#edit-task-text').value = currentText;
+
+    // Populate name
+    const nameTag = li ? li.querySelector('.item-name-tag') : null;
+    modal.querySelector('#edit-name-tag').value = (nameTag && nameTag.classList.contains('visible')) ? nameTag.textContent : '';
+
+    // Show/hide delete button (only custom items can be deleted)
+    modal.querySelector('#btn-delete-edit').style.display = isCustom ? 'block' : 'none';
+
+    modal.style.display = 'flex';
+    modal.querySelector('#edit-task-text').focus();
+  }
+
+  // ── Build item UI: name tag below + edit icon on right ──
+  function setupItemUI(li, itemId, isCustom, firebaseKey) {
     const label = li.querySelector('label');
+
+    // Wrap label in a row div
     const row = document.createElement('div');
     row.className = 'checklist-item-row';
     li.insertBefore(row, label);
     row.appendChild(label);
 
-    const actions = document.createElement('div');
-    actions.className = 'item-actions';
-
-    // Assign Name button
-    const assignBtn = document.createElement('button');
-    assignBtn.className = 'btn-assign-name';
-    assignBtn.textContent = '+ Name';
-    assignBtn.setAttribute('data-item-id', itemId);
-    actions.appendChild(assignBtn);
-
-    // Delete button (only for custom items)
-    if (isCustom) {
-      const delBtn = document.createElement('button');
-      delBtn.className = 'btn-delete-item';
-      delBtn.innerHTML = '&times;';
-      delBtn.title = 'Delete this item';
-      delBtn.addEventListener('click', (e) => {
-        e.stopPropagation();
-        if (!isAuthenticated) return;
-        li.remove();
-        // Remove from Firebase
-        if (db && firebaseKey) {
-          db.ref('custom_items/' + firebaseKey).remove();
-        }
-        // Remove name assignment and checklist state
-        if (db) {
-          db.ref('name_assignments/' + itemId).remove();
-          db.ref('checklist_state/' + itemId).remove();
-        }
-        updateAllProgress();
-      });
-      actions.appendChild(delBtn);
-    }
-
-    row.appendChild(actions);
-
-    // Name popover
-    const popover = document.createElement('div');
-    popover.className = 'name-input-popover';
-    popover.innerHTML = `
-      <input type="text" placeholder="Your name..." maxlength="20">
-      <div class="name-actions">
-        <button class="btn-name-save">Save</button>
-        <button class="btn-name-clear">Clear</button>
-      </div>
-    `;
-    li.appendChild(popover);
-
-    assignBtn.addEventListener('click', (e) => {
+    // Edit button (pencil icon) on the right
+    const editBtn = document.createElement('button');
+    editBtn.className = 'btn-edit-item';
+    editBtn.innerHTML = '&#9998;'; // ✎ pencil
+    editBtn.title = 'Edit item';
+    editBtn.addEventListener('click', (e) => {
       e.stopPropagation();
       if (!isAuthenticated) {
         loginModal.style.display = 'flex';
         return;
       }
-      // Close any other open popovers
-      document.querySelectorAll('.name-input-popover').forEach(p => p.style.display = 'none');
-      popover.style.display = 'block';
-      popover.querySelector('input').focus();
+      openEditModal(itemId, isCustom, firebaseKey);
     });
+    row.appendChild(editBtn);
 
-    popover.querySelector('.btn-name-save').addEventListener('click', (e) => {
-      e.stopPropagation();
-      const name = popover.querySelector('input').value.trim();
-      if (name) {
-        assignBtn.textContent = name;
-        assignBtn.classList.add('has-name');
-        if (db) {
-          db.ref('name_assignments/' + itemId).set(name);
-        }
-      }
-      popover.style.display = 'none';
-    });
-
-    popover.querySelector('.btn-name-clear').addEventListener('click', (e) => {
-      e.stopPropagation();
-      assignBtn.textContent = '+ Name';
-      assignBtn.classList.remove('has-name');
-      popover.querySelector('input').value = '';
-      if (db) {
-        db.ref('name_assignments/' + itemId).remove();
-      }
-      popover.style.display = 'none';
-    });
-
-    // Close popover on Enter key
-    popover.querySelector('input').addEventListener('keydown', (e) => {
-      if (e.key === 'Enter') {
-        popover.querySelector('.btn-name-save').click();
-      }
-    });
-
-    return assignBtn;
+    // Name tag below the task
+    const nameTag = document.createElement('div');
+    nameTag.className = 'item-name-tag';
+    nameTag.setAttribute('data-item-id', itemId);
+    li.appendChild(nameTag);
   }
 
-  // Add actions to all existing (static) checklist items
+  // Add UI to all existing (static) checklist items
   document.querySelectorAll('.checklist-items li').forEach(li => {
     const cb = li.querySelector('input[type="checkbox"]');
-    if (cb) createItemActions(li, cb.id, false, null);
-  });
-
-  // Close popovers when clicking outside
-  document.addEventListener('click', (e) => {
-    if (!e.target.closest('.name-input-popover') && !e.target.closest('.btn-assign-name')) {
-      document.querySelectorAll('.name-input-popover').forEach(p => p.style.display = 'none');
-    }
+    if (cb) setupItemUI(li, cb.id, false, null);
   });
 
   // ── Custom Items Logic ──
-  // Track Firebase keys for custom items so we can delete them
   const customItemKeys = {};
 
   function appendCustomItemDOM(targetListId, itemId, text, firebaseKey) {
@@ -590,14 +651,14 @@ document.addEventListener('DOMContentLoaded', () => {
     const cb = li.querySelector('input[type="checkbox"]');
     attachCheckboxListener(cb);
 
-    // Add name + delete actions
-    createItemActions(li, itemId, true, firebaseKey);
+    // Add edit icon + name tag
+    setupItemUI(li, itemId, true, firebaseKey);
     if (firebaseKey) customItemKeys[itemId] = firebaseKey;
 
-    applyAuthState(); // disable if not logged in
+    applyAuthState();
   }
 
-  // Load custom items from Firebase in real-time (if available)
+  // Load custom items from Firebase in real-time
   if (db) {
     db.ref('custom_items').on('child_added', (snapshot) => {
       const item = snapshot.val();
@@ -627,7 +688,6 @@ document.addEventListener('DOMContentLoaded', () => {
       
       if (text) {
         const itemId = 'custom_' + Date.now();
-        // Save to Firebase if available (child_added will render it)
         if (db) {
           db.ref('custom_items').push({
             id: itemId,
@@ -645,16 +705,18 @@ document.addEventListener('DOMContentLoaded', () => {
   // ── Load Name Assignments from Firebase ──
   if (db) {
     db.ref('name_assignments').on('value', (snapshot) => {
-      const names = snapshot.val();
-      if (names) {
-        Object.keys(names).forEach(itemId => {
-          const btn = document.querySelector(`.btn-assign-name[data-item-id="${itemId}"]`);
-          if (btn) {
-            btn.textContent = names[itemId];
-            btn.classList.add('has-name');
-          }
-        });
-      }
+      const names = snapshot.val() || {};
+      // Update all name tags
+      document.querySelectorAll('.item-name-tag').forEach(tag => {
+        const itemId = tag.getAttribute('data-item-id');
+        if (names[itemId]) {
+          tag.textContent = names[itemId];
+          tag.classList.add('visible');
+        } else {
+          tag.textContent = '';
+          tag.classList.remove('visible');
+        }
+      });
     });
   }
 
