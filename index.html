@@ -86,10 +86,10 @@
             <path d="M 600,20 C 640,80 660,130 680,175"
                   fill="none" stroke="#1d2e24" stroke-width="10" stroke-linecap="round"/>
             <!-- Sequoia → Kings Canyon shadow -->
-            <path d="M 680,175 C 705,155 735,135 760,120"
+            <path d="M 680,175 C 700,140 730,105 760,80"
                   fill="none" stroke="#1d2e24" stroke-width="10" stroke-linecap="round"/>
             <!-- Return: KC → Home shadow -->
-            <path d="M 760,120 C 820,160 870,185 920,218"
+            <path d="M 760,80 C 820,130 870,170 920,218"
                   fill="none" stroke="#1d2e24" stroke-width="10" stroke-linecap="round"/>
             <!-- Loop-close dashed line -->
             <path d="M 920,220 C 715,245 400,245 90,220"
@@ -117,13 +117,13 @@
                   style="transition: stroke-dashoffset 0.7s cubic-bezier(0.4,0,0.2,1);"/>
             <!-- Segment 4: Sequoia → Kings Canyon -->
             <path id="outbound-seq-kc"
-                  d="M 680,175 C 705,155 735,135 760,120"
+                  d="M 680,175 C 700,140 730,105 760,80"
                   fill="none" stroke="url(#outbound-gradient)" stroke-width="6"
                   stroke-linecap="round"
                   style="transition: stroke-dashoffset 0.7s cubic-bezier(0.4,0,0.2,1);"/>
             <!-- Return: Kings Canyon → Santa Ana (CA-99/I-5) -->
             <path id="return-route"
-                  d="M 760,120 C 820,160 870,185 920,218"
+                  d="M 760,80 C 820,130 870,170 920,218"
                   fill="none" stroke="url(#return-gradient)" stroke-width="6"
                   stroke-linecap="round"
                   style="transition: stroke-dashoffset 0.7s cubic-bezier(0.4,0,0.2,1);"/>
@@ -145,7 +145,7 @@
               <text text-anchor="middle" fill="#29b6f6" font-size="11" font-weight="600" y="-1">~280 mi | ~5h</text>
             </g>
             <!-- Sequoia → KC -->
-            <g class="path-label" transform="translate(720,152)">
+            <g class="path-label" transform="translate(720,128)">
               <rect x="-50" y="-16" width="100" height="24" rx="12" fill="#1b2e22" stroke="#81c784" stroke-width="1"/>
               <text text-anchor="middle" fill="#a5d6a7" font-size="10" font-weight="600" y="-1">30 mi | ~1.2h</text>
             </g>
@@ -194,7 +194,7 @@
             </g>
 
             <!-- Node: Kings Canyon (Day 4) -->
-            <g class="map-node" id="node-kings-canyon" transform="translate(760, 120)" data-day="4">
+            <g class="map-node" id="node-kings-canyon" transform="translate(760, 80)" data-day="4">
               <circle r="15" fill="#16251b" stroke="#81c784" stroke-width="3"/>
               <circle r="6" fill="#81c784"/>
               <text y="32" text-anchor="middle" fill="#fff" font-size="12" font-weight="700">Kings Canyon</text>
