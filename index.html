@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Sierra Ascent Loop: The ultimate 4-day, 3-night Western & Eastern Sierra Nevada road trip from Santa Ana through Sequoia, Kings Canyon, Lake Tahoe, and Mammoth Lakes.">
-  <title>Sierra Ascent Loop: Santa Ana → Sequoia → Tahoe → Mammoth 2026</title>
+  <meta name="description" content="Sierra Ascent Loop: The ultimate 4-day, 3-night Northern California road trip from Santa Ana through Burney Falls, Lake Tahoe, Sequoia, and Kings Canyon National Parks.">
+  <title>Sierra Ascent Loop: Santa Ana → Burney Falls → Tahoe → Sequoia → Kings Canyon 2026</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -15,22 +15,22 @@
   <!-- ═══════════════════════════════ HERO ═══════════════════════════════ -->
   <header class="hero-banner" style="background-image: linear-gradient(rgba(0,0,0,0.45), rgba(18,30,22,0.95)), url('Image/Lake Tahoe_2.webp');">
     <div class="hero-content">
-      <span class="hero-subtitle">Western & Eastern Sierra Nevada Loop</span>
+      <span class="hero-subtitle">Northern California Sierra Nevada Loop</span>
       <h1 class="hero-title">Sierra Ascent</h1>
-      <p class="hero-description">The ultimate 4-day, 3-night loop tracing both the western giant forests and the dramatic Eastern Sierra escarpment. Ancient sequoias, cobalt alpine waters, and volcanic peaks await.</p>
+      <p class="hero-description">The ultimate 4-day, 3-night loop — midnight launch from Santa Ana, a roaring 129-ft waterfall, cobalt alpine Tahoe waters, ancient sequoias, and a glacier-carved canyon. July 4–7, 2026.</p>
 
       <div class="metrics-grid">
         <div class="metric-card" id="metric-distance">
-          <div class="metric-value">723<span class="metric-unit">mi</span></div>
+          <div class="metric-value">~700<span class="metric-unit">mi</span></div>
           <div class="metric-label">Total Loop Distance</div>
         </div>
         <div class="metric-card" id="metric-time">
-          <div class="metric-value">15.2<span class="metric-unit">hrs</span></div>
+          <div class="metric-value">~17<span class="metric-unit">hrs</span></div>
           <div class="metric-label">Net Driving Time</div>
         </div>
         <div class="metric-card" id="metric-duration">
           <div class="metric-value">4<span class="metric-unit">Days</span></div>
-          <div class="metric-label">3 Nights · July 3–6</div>
+          <div class="metric-label">3 Nights · July 4–7</div>
         </div>
         <div class="metric-card" id="metric-stops">
           <div class="metric-value">5<span class="metric-unit">Stops</span></div>
@@ -56,178 +56,29 @@
         <div class="map-wrapper">
           <svg viewBox="0 -52 1020 322" class="route-map-svg" id="route-map-svg">
             <defs>
-              <!-- Outbound gradient: Orange → Green → Blue -->
               <linearGradient id="outbound-gradient" x1="0%" y1="100%" x2="100%" y2="0%">
                 <stop offset="0%"   stop-color="#ef7e32" />
                 <stop offset="40%"  stop-color="#4caf50" />
                 <stop offset="100%" stop-color="#0288d1" />
               </linearGradient>
-              <!-- Return gradient: Blue → Amber → Orange -->
               <linearGradient id="return-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
                 <stop offset="0%"   stop-color="#0288d1" />
                 <stop offset="100%" stop-color="#ffa726" />
               </linearGradient>
-              <!-- Glow filter -->
               <filter id="glow" x="-30%" y="-30%" width="160%" height="160%">
                 <feGaussianBlur stdDeviation="5" result="blur"/>
                 <feComposite in="SourceGraphic" in2="blur" operator="over"/>
               </filter>
             </defs>
-
-            <!-- ─── Shadow Paths ─── -->
-            <!-- SA → Kings Canyon shadow (always) -->
-            <path d="M 90,215 C 155,172 198,138 248,122 C 310,102 350,72 395,65"
-                  fill="none" stroke="#1d2e24" stroke-width="10" stroke-linecap="round"/>
-            <!-- KC → Tahoe direct shadow -->
-            <path id="shadow-kc-tahoe" d="M 395,65 Q 492,58 598,56"
-                  fill="none" stroke="#1d2e24" stroke-width="10" stroke-linecap="round"/>
-            <!-- KC → Burney → Tahoe arc shadow (hidden until toggle ON) -->
-            <path id="shadow-kc-burney" d="M 395,65 Q 440,8 493,-18 Q 548,8 598,56"
-                  fill="none" stroke="#1d2e24" stroke-width="10" stroke-linecap="round"
-                  style="display:none;"/>
-            <!-- Return shadow -->
-            <path d="M 598,56 C 710,68 765,98 803,132 C 845,172 882,205 920,218"
-                  fill="none" stroke="#1d2e24" stroke-width="10" stroke-linecap="round"/>
-            <!-- Loop-close dashed line -->
-            <path d="M 920,220 C 715,240 400,242 90,220"
-                  fill="none" stroke="rgba(255,255,255,0.07)" stroke-width="2"
-                  stroke-dasharray="10,7" stroke-linecap="round"/>
-
-            <!-- ─── Active Paths (animated, split into segments) ─── -->
-            <!-- Segment 1: Santa Ana → Sequoia → Kings Canyon -->
-            <path id="outbound-sa-kc"
-                  d="M 90,215 C 155,172 198,138 248,122 C 310,102 350,72 395,65"
-                  fill="none" stroke="url(#outbound-gradient)" stroke-width="6"
-                  stroke-linecap="round"
-                  style="transition: stroke-dashoffset 0.7s cubic-bezier(0.4,0,0.2,1);"/>
-            <!-- Segment 2a: KC → Tahoe (DIRECT, default) -->
-            <path id="outbound-kc-tahoe"
-                  d="M 395,65 Q 492,58 598,56"
-                  fill="none" stroke="url(#outbound-gradient)" stroke-width="6"
-                  stroke-linecap="round"
-                  style="transition: stroke-dashoffset 0.7s cubic-bezier(0.4,0,0.2,1);"/>
-            <!-- Segment 2b: KC → Burney Falls → Tahoe (BURNEY ARC, hidden by default) -->
-            <path id="outbound-kc-burney"
-                  d="M 395,65 Q 440,8 493,-18 Q 548,8 598,56"
-                  fill="none" stroke="url(#outbound-gradient)" stroke-width="6"
-                  stroke-linecap="round"
-                  style="display:none; transition: stroke-dashoffset 0.7s cubic-bezier(0.4,0,0.2,1);"/>
-            <!-- Return: Lake Tahoe → Mammoth → Home -->
-            <path id="return-route"
-                  d="M 598,56 C 710,68 765,98 803,132 C 845,172 882,205 920,218"
-                  fill="none" stroke="url(#return-gradient)" stroke-width="6"
-                  stroke-linecap="round"
-                  style="transition: stroke-dashoffset 0.7s cubic-bezier(0.4,0,0.2,1);"/>
-
-            <!-- ─── Distance Labels ─── -->
-            <!-- SA → Sequoia -->
-            <g class="path-label" transform="translate(168,162)">
-              <rect x="-58" y="-18" width="116" height="26" rx="13" fill="#1b2e22" stroke="#4caf50" stroke-width="1"/>
-              <text text-anchor="middle" fill="#81c784" font-size="11" font-weight="600" y="-1">258 mi | ~4.5h</text>
-            </g>
-            <!-- Sequoia → Kings Canyon -->
-            <g class="path-label" transform="translate(322,82)">
-              <rect x="-52" y="-18" width="104" height="26" rx="13" fill="#1b2e22" stroke="#81c784" stroke-width="1"/>
-              <text text-anchor="middle" fill="#a5d6a7" font-size="11" font-weight="600" y="-1">30 mi | ~1.2h</text>
-            </g>
-            <!-- KC → Tahoe DIRECT label (default visible) -->
-            <g class="path-label" id="label-kc-tahoe-direct" transform="translate(496,46)">
-              <rect x="-62" y="-18" width="124" height="26" rx="13" fill="#1b2e22" stroke="#0288d1" stroke-width="1"/>
-              <text text-anchor="middle" fill="#29b6f6" font-size="11" font-weight="600" y="-1">~240 mi | ~5h</text>
-            </g>
-            <!-- KC → Burney label (hidden by default) -->
-            <g class="path-label" id="label-kc-burney" transform="translate(435,25)" style="display:none;">
-              <rect x="-52" y="-16" width="104" height="24" rx="12" fill="#1b2e22" stroke="#ff7043" stroke-width="1"/>
-              <text text-anchor="middle" fill="#ff8a65" font-size="10" font-weight="600" y="-1">~150 mi north</text>
-            </g>
-            <!-- Burney → Tahoe label (hidden by default) -->
-            <g class="path-label" id="label-burney-tahoe" transform="translate(553,25)" style="display:none;">
-              <rect x="-52" y="-16" width="104" height="24" rx="12" fill="#1b2e22" stroke="#ff7043" stroke-width="1"/>
-              <text text-anchor="middle" fill="#ff8a65" font-size="10" font-weight="600" y="-1">~130 mi south</text>
-            </g>
-            <!-- Lake Tahoe → Mammoth -->
-            <g class="path-label" transform="translate(706,62)">
-              <rect x="-62" y="-18" width="124" height="26" rx="13" fill="#1b2e22" stroke="#00acc1" stroke-width="1"/>
-              <text text-anchor="middle" fill="#4dd0e1" font-size="11" font-weight="600" y="-1">165 mi | ~3.2h</text>
-            </g>
-            <!-- Mammoth → Santa Ana (return) -->
-            <g class="path-label" transform="translate(500,248)">
-              <rect x="-95" y="-17" width="190" height="25" rx="12" fill="#1b2e22" stroke="rgba(255,165,0,0.4)" stroke-width="1"/>
-              <text text-anchor="middle" fill="#ffa726" font-size="11" font-weight="500" y="-2">← 310 mi | ~5h return via US-395</text>
-            </g>
-
-            <!-- ─── Direction Arrow Markers ─── -->
-            <text transform="translate(820,195)" fill="rgba(255,167,38,0.6)" font-size="14">↘</text>
-            <text transform="translate(140,182)" fill="rgba(76,175,80,0.6)" font-size="14">↗</text>
-
-            <!-- ═══════ MAP NODES ═══════ -->
-
-            <!-- Node: Santa Ana (Departure + Return) -->
-            <g class="map-node active" id="node-santa-ana" transform="translate(90, 215)" data-day="1">
-              <circle r="20" fill="#16251b" stroke="#ef7e32" stroke-width="4" filter="url(#glow)"/>
-              <circle r="9" fill="#ef7e32"/>
-              <text y="38" text-anchor="middle" fill="#fff" font-size="12" font-weight="700">Santa Ana</text>
-              <text y="52" text-anchor="middle" fill="#888" font-size="10" font-weight="500">Departure & Return</text>
-            </g>
-
-            <!-- Node: Sequoia NP (Night 1) -->
-            <g class="map-node" id="node-sequoia" transform="translate(248, 122)" data-day="1">
-              <circle r="17" fill="#16251b" stroke="#4caf50" stroke-width="3"/>
-              <circle r="7" fill="#4caf50"/>
-              <text y="36" text-anchor="middle" fill="#fff" font-size="12" font-weight="700">Sequoia NP</text>
-              <text y="50" text-anchor="middle" fill="#888" font-size="10" font-weight="500">Night 1 · Giant Forest</text>
-            </g>
-
-            <!-- Node: Kings Canyon -->
-            <g class="map-node" id="node-kings-canyon" transform="translate(395, 65)" data-day="2">
-              <circle r="15" fill="#16251b" stroke="#81c784" stroke-width="3"/>
-              <circle r="6" fill="#81c784"/>
-              <text y="32" text-anchor="middle" fill="#fff" font-size="12" font-weight="700">Kings Canyon</text>
-              <text y="46" text-anchor="middle" fill="#888" font-size="10" font-weight="500">Day 2 Morning</text>
-            </g>
-
-            <!-- Node: Lake Tahoe (Nights 2 & 3) -->
-            <g class="map-node" id="node-tahoe" transform="translate(598, 56)" data-day="2">
-              <circle r="20" fill="#16251b" stroke="#0288d1" stroke-width="4"/>
-              <circle r="9" fill="#0288d1"/>
-              <text y="38" text-anchor="middle" fill="#fff" font-size="12" font-weight="700">Lake Tahoe</text>
-              <text y="52" text-anchor="middle" fill="#888" font-size="10" font-weight="500">Nights 2 & 3 · Resort Base</text>
-            </g>
-
-            <!-- Node: Mammoth Lakes (Day 4 Stopover) -->
-            <g class="map-node" id="node-mammoth" transform="translate(803, 132)" data-day="4">
-              <circle r="15" fill="#16251b" stroke="#ffa726" stroke-width="3"/>
-              <circle r="6" fill="#ffa726"/>
-              <text y="32" text-anchor="middle" fill="#fff" font-size="12" font-weight="700">Mammoth Lakes</text>
-              <text y="46" text-anchor="middle" fill="#888" font-size="10" font-weight="500">Day 4 Return Stopover</text>
-            </g>
-
-            <!-- Node: Burney Falls (Optional, hidden by default) -->
-            <g class="map-node" id="node-burney" transform="translate(493, -18)" data-day="2"
-               style="display:none; cursor:pointer;">
-              <circle r="13" fill="#16251b" stroke="#ff7043" stroke-width="3"/>
-              <circle r="5" fill="#ff7043"/>
-              <text y="25" text-anchor="middle" fill="#fff" font-size="11" font-weight="700">Burney Falls</text>
-              <text y="38" text-anchor="middle" fill="#888" font-size="9" font-weight="500">Optional Detour</text>
-            </g>
-
-            <!-- Return "Santa Ana" endpoint -->
-            <g transform="translate(920, 218)">
-              <circle r="10" fill="#16251b" stroke="#ef7e32" stroke-width="2" opacity="0.7"/>
-              <circle r="4" fill="#ef7e32" opacity="0.7"/>
-              <text y="22" text-anchor="middle" fill="rgba(239,126,50,0.7)" font-size="10" font-weight="600">↺ Home</text>
-            </g>
-
           </svg>
         </div>
 
-        <!-- Map Info Drawer -->
         <div id="map-info-panel" class="map-info-panel">
           <div class="info-panel-header">
             <h3 id="panel-stop-title">Santa Ana</h3>
             <span class="badge" id="panel-stop-badge">Departure Point</span>
           </div>
-          <p id="panel-stop-description">The loop launch point. Departing at midnight bypasses 100% of Southern California Friday morning gridlock.</p>
+          <p id="panel-stop-description">The loop launch point. Departing at midnight bypasses 100% of Southern California holiday gridlock.</p>
         </div>
       </div>
     </section>
@@ -237,29 +88,27 @@
       <div class="section-container">
         <h2 class="section-title text-center">Day-by-Day Expedition Itinerary</h2>
 
-        <!-- Day Tabs -->
         <div class="day-tabs-wrapper">
           <div class="day-tabs" role="tablist">
             <button class="day-tab active" id="tab-day1" role="tab" aria-selected="true" aria-controls="panel-day1" data-day="1">
               <span class="tab-day-num">Day 1</span>
-              <span class="tab-day-title">Giant Forest</span>
+              <span class="tab-day-title">Burney &amp; Tahoe</span>
             </button>
             <button class="day-tab" id="tab-day2" role="tab" aria-selected="false" aria-controls="panel-day2" data-day="2">
               <span class="tab-day-num">Day 2</span>
-              <span class="tab-day-title">Canyon to Tahoe</span>
+              <span class="tab-day-title">Tahoe Highlights</span>
             </button>
             <button class="day-tab" id="tab-day3" role="tab" aria-selected="false" aria-controls="panel-day3" data-day="3">
               <span class="tab-day-num">Day 3</span>
-              <span class="tab-day-title">Emerald Cascades</span>
+              <span class="tab-day-title">Onward to Sequoia</span>
             </button>
             <button class="day-tab" id="tab-day4" role="tab" aria-selected="false" aria-controls="panel-day4" data-day="4">
               <span class="tab-day-num">Day 4</span>
-              <span class="tab-day-title">Eastern Descent</span>
+              <span class="tab-day-title">Kings Canyon &amp; Home</span>
             </button>
           </div>
         </div>
 
-        <!-- ─── Itinerary Panels ─── -->
         <div class="itinerary-panels">
 
           <!-- ══ DAY 1 ══ -->
@@ -267,74 +116,68 @@
             <div class="panel-grid">
               <div class="panel-details">
                 <div class="panel-meta-info">
-                  <span class="date-badge">Friday, July 3rd</span>
-                  <span class="distance-badge">258 mi · Night 1 at Sequoia</span>
+                  <span class="date-badge">Friday, July 4th</span>
+                  <span class="distance-badge">~500 mi · Night 1 at Lake Tahoe</span>
                 </div>
-                <h3 class="day-heading">Day 1 — Ascent to the Giant Forest</h3>
-                <p class="day-summary">Departing Santa Ana at midnight to bypass 100% of Friday morning gridlock, the loop ascends the western Sierra foothills to arrive at Sequoia National Park at first light — earning a misty, uncrowded dawn inside the world's largest trees.</p>
+                <h3 class="day-heading">Day 1 — Drive North &amp; Settle into Tahoe</h3>
+                <p class="day-summary">The loop begins at midnight Thursday — a smart departure that clears 100% of Southern California Fourth of July gridlock. A morning detour to the roaring 129-ft Burney Falls breaks the journey before arriving lakeside at Tahoe by late afternoon.</p>
 
                 <div class="itinerary-details-grid">
                   <div class="detail-item">
                     <strong>Transit Corridor:</strong>
-                    <span>I-5 N → CA-99 N through Bakersfield at dawn → CA-198 E into the Sierra foothills.</span>
+                    <span>I-5 N through the Central Valley → CA-299 E to Burney Falls → Lassen Corridor south toward Lake Tahoe (~2.5 hrs from Burney).</span>
                   </div>
                   <div class="detail-item">
                     <strong>Night 1 Basecamp:</strong>
-                    <span>Hotel lodging inside Sequoia National Park (~6,200 ft elevation).</span>
+                    <span>Hotel lodging at Lake Tahoe — check in, relax, dinner lakeside.</span>
                   </div>
                 </div>
 
                 <div class="timeline">
                   <div class="timeline-item">
-                    <div class="timeline-time">00:00 AM</div>
+                    <div class="timeline-time">12:00 AM</div>
                     <div class="timeline-content">
                       <h4>Midnight Launch from Santa Ana</h4>
-                      <p>The loop begins. Clear open freeway lanes as you cruise north through the night. Bakersfield appears as first light breaks on the horizon.</p>
+                      <p>The loop begins Thursday night at midnight. Open freeway lanes all the way up I-5 North through the Central Valley — zero holiday traffic at this hour.</p>
                     </div>
                   </div>
                   <div class="timeline-item">
-                    <div class="timeline-time">05:00 AM</div>
+                    <div class="timeline-time">10:00 AM</div>
                     <div class="timeline-content">
-                      <h4>Sequoia National Park Arrival</h4>
-                      <p>Enter the Giant Forest as dawn mist still clings to the switchbacks. You have the entire park practically to yourselves.</p>
+                      <h4>Burney Falls — 129-ft Basalt Cascade</h4>
+                      <p>Arrive at McArthur-Burney Falls Memorial State Park. Walk the flat paved loop trail around the stunning 129-foot spring-fed falls — 100 million gallons of water per day erupting from moss-covered basalt.</p>
+                      <div class="alert alert-warning" style="margin-top:10px;">
+                        <strong>⚠️ Holiday Weekend:</strong> A pre-booked 2026 day-use parking reservation is required — book ahead as this is a popular July 4th destination.
+                      </div>
                     </div>
                   </div>
                   <div class="timeline-item">
-                    <div class="timeline-time">Morning Focus</div>
+                    <div class="timeline-time">1:30 PM</div>
                     <div class="timeline-content">
-                      <h4>Moro Rock & The Giant Sequoias</h4>
-                      <p><strong>Moro Rock Trail:</strong> Tackle the 350-step granite staircase in cool morning air. The summit rewards you with an unobstructed, misty panorama of the Great Western Divide — zero crowds.</p>
-                      <p><strong>General Sherman Tree:</strong> Walk into the grove to stand beneath the single largest living tree on Earth by volume (52,500 cubic feet of wood).</p>
-                      <p><strong>Tunnel Log:</strong> Drive your vehicle through the hollowed-out fallen giant tree for the classic group photo.</p>
+                      <h4>Depart South via Lassen Corridor</h4>
+                      <p>Head south through the dramatic Lassen volcanic corridor toward Lake Tahoe — approximately 2.5 hours of scenic mountain driving.</p>
                     </div>
                   </div>
                   <div class="timeline-item">
-                    <div class="timeline-time">Afternoon</div>
+                    <div class="timeline-time">4:00 PM</div>
                     <div class="timeline-content">
-                      <h4>Settle In & Explore</h4>
-                      <p>Check into the hotel and unwind. Spend the afternoon relaxing under towering ancient boughs. Prepare tomorrow's early Kings Canyon drive.</p>
-                    </div>
-                  </div>
-                  <div class="timeline-item">
-                    <div class="timeline-time">Night 1</div>
-                    <div class="timeline-content">
-                      <h4>Sleep Under the Redwood Stars</h4>
-                      <p>Settle in for Night 1 among the sequoias. Enjoy the deep silence of the ancient forest and a sky full of stars at 6,200 ft elevation.</p>
+                      <h4>Arrive Lake Tahoe — Check In &amp; Relax</h4>
+                      <p>Check into your Tahoe hotel and unwind. Tonight is all about soaking in the lakeside atmosphere — a well-earned dinner with the cobalt water shimmering outside your window.</p>
                     </div>
                   </div>
                 </div>
               </div>
 
               <div class="panel-media">
-                <h4 class="media-title">Scenery & Highlights</h4>
+                <h4 class="media-title">Scenery &amp; Highlights</h4>
                 <div class="photo-gallery">
                   <figure class="gallery-item">
-                    <img src="Image/Giant Sequoia Tree_1.jpg" alt="Misty Giant Sequoia forest at dawn in Sequoia National Park" loading="lazy">
-                    <figcaption>The Giant Forest at Dawn</figcaption>
+                    <img src="Image/Burney Falls _ Lake Tahoe _ 1.jpg" alt="The roaring 129-foot Burney Falls spring-fed cascade" loading="lazy">
+                    <figcaption>Burney Falls — 100M Gallons/Day</figcaption>
                   </figure>
                   <figure class="gallery-item">
-                    <img src="Image/Giant Sequoia Tree_2.jpg" alt="Giant Sequoia trunks towering into the canopy" loading="lazy">
-                    <figcaption>Sequoia Canopy — 52,500 cu·ft</figcaption>
+                    <img src="Image/Lake Tahoe_1.webp" alt="First evening arrival at Lake Tahoe cobalt blue waters" loading="lazy">
+                    <figcaption>Lake Tahoe — Night 1 Arrival</figcaption>
                   </figure>
                 </div>
               </div>
@@ -346,93 +189,72 @@
             <div class="panel-grid">
               <div class="panel-details">
                 <div class="panel-meta-info">
-                  <span class="date-badge">Saturday, July 4th</span>
-                  <span class="distance-badge">~270 mi · Night 2 at Lake Tahoe</span>
+                  <span class="date-badge">Saturday, July 5th</span>
+                  <span class="distance-badge">~local driving · Night 2 at Lake Tahoe</span>
                 </div>
-                <h3 class="day-heading">Day 2 — Canyon Depths to Cobalt Shores</h3>
-                <p class="day-summary">Rise early in the Sequoia forest, drive the historic Generals Highway north to Kings Canyon for a morning of canyon exploration, then cross into the alpine basin of Lake Tahoe — with an optional 4th of July detour to witness the roaring Burney Falls.</p>
+                <h3 class="day-heading">Day 2 — Tahoe Highlights</h3>
+                <p class="day-summary">A full day dedicated to Lake Tahoe's greatest hits — turquoise granite-boulder beaches, a hidden Caribbean-colored cove, the legendary Eagle Falls trail at Emerald Bay, and a dramatic sunset scramble above the lake. Go early to beat the holiday weekend crowds.</p>
 
                 <div class="itinerary-details-grid">
                   <div class="detail-item">
-                    <strong>Transit Corridor:</strong>
-                    <span>Generals Hwy (Sequoia → Kings Canyon), then CA-41/US-50 or the direct route north to South Lake Tahoe.</span>
+                    <strong>Focus:</strong>
+                    <span>Sand Harbor, Secret Cove, Emerald Bay + Eagle Falls, Cave Rock sunset scramble.</span>
                   </div>
                   <div class="detail-item">
                     <strong>Night 2 Basecamp:</strong>
-                    <span>Resort cabin lodging in South Lake Tahoe for Nights 2 & 3.</span>
+                    <span>Second night at Lake Tahoe hotel — celebrate the day's highlights over dinner.</span>
                   </div>
                 </div>
 
                 <div class="timeline">
                   <div class="timeline-item">
-                    <div class="timeline-time">07:00 AM</div>
+                    <div class="timeline-time">8:00 AM</div>
                     <div class="timeline-content">
-                      <h4>Dawn Wake-Up in the Giant Forest</h4>
-                      <p>Watch morning sunbeams cut through the sequoia grove before packing up and heading north.</p>
-                    </div>
-                  </div>
-                  <div class="timeline-item">
-                    <div class="timeline-time">08:30 AM</div>
-                    <div class="timeline-content">
-                      <h4>Kings Canyon National Park</h4>
-                      <p>Drive the historic Generals Highway north (30 miles, ~1.2 hours) to Kings Canyon.</p>
-                      <p><strong>General Grant Tree:</strong> Walk the short paved loop in Grant Grove to see the "Nation's Christmas Tree."</p>
-                      <p><strong>Zumwalt Meadow:</strong> Stroll the boardwalk loop along the glacier-carved canyon floor to watch the Kings River reflect raw granite cliffs.</p>
+                      <h4>Sand Harbor State Park</h4>
+                      <p>Arrive early to grab a prime beach spot among the iconic turquoise water and massive granite boulders. One of the most photogenic lakeshores in North America — stunning in the morning calm before the holiday crowds arrive.</p>
                     </div>
                   </div>
                   <div class="timeline-item">
                     <div class="timeline-time">11:30 AM</div>
                     <div class="timeline-content">
-                      <h4>Optional: Burney Falls Detour</h4>
-                      <div class="option-card" style="margin-top:10px;">
-                        <div class="option-header">
-                          <span class="option-badge">Saturday Loop</span>
-                          <h4>Burney Falls — 129-ft Basalt Cascade</h4>
-                        </div>
-                        <p>Drive north to McArthur-Burney Falls Memorial State Park to witness 100 million gallons of spring-fed water per day erupting from a moss-covered basalt cliff. <strong>Day-use vehicle fee: $11.</strong></p>
-                        <div class="alert alert-warning">
-                          <strong>Trade-off:</strong> Adds ~4 hours of driving (~340 mi round trip) vs. the direct Tahoe route. However, it clears Sunday completely for a relaxed Tahoe day.
-                        </div>
-                        <!-- Burney Route Toggle -->
-                        <div class="burney-toggle-wrapper" style="margin-top:14px;">
-                          <label class="burney-toggle-label" for="toggle-burney">
-                            <span>Add Burney Falls to route map</span>
-                            <div class="toggle-switch">
-                              <input type="checkbox" id="toggle-burney">
-                              <span class="toggle-track">
-                                <span class="toggle-thumb"></span>
-                              </span>
-                            </div>
-                          </label>
-                          <p class="toggle-hint" id="burney-toggle-hint">Route map shows: <strong id="burney-route-label">Direct KC → Tahoe</strong></p>
-                        </div>
+                      <h4>Secret Cove Beach</h4>
+                      <p>An easy ~1-mile round-trip trail leads down to a hidden, Caribbean-colored cove with dramatically clear water. A local treasure well worth the short hike.</p>
+                    </div>
+                  </div>
+                  <div class="timeline-item">
+                    <div class="timeline-time">2:00 PM</div>
+                    <div class="timeline-content">
+                      <h4>Emerald Bay Overlook &amp; Eagle Falls Trail</h4>
+                      <p>Drive to Emerald Bay State Park for a breathtaking overlook of Tahoe's most brilliant teal inlet and Fannette Island. Then tackle the Eagle Falls trail as the waterfall thunders alongside you on the climb.</p>
+                      <div class="alert alert-warning" style="margin-top:10px;">
+                        <strong>⚠️ Holiday Buffer:</strong> Build in an extra 2 hours of buffer here for holiday weekend parking and traffic congestion along the west shore.
                       </div>
                     </div>
                   </div>
                   <div class="timeline-item">
-                    <div class="timeline-time">05:30 PM</div>
+                    <div class="timeline-time">7:30 PM</div>
                     <div class="timeline-content">
-                      <h4>South Lake Tahoe Arrival</h4>
-                      <p>Check into your lakeside cabin. Grab a celebratory July 4th dinner in town and watch your first high-altitude sunset over the cobalt alpine water.</p>
+                      <h4>Cave Rock Sunset Scramble</h4>
+                      <p>Drive to the East Shore (Nevada side) for a short, steep scramble to the top of Cave Rock. The granite summit provides an unforgettable 180° panorama as the sun sinks below the Sierra crest, painting the entire lake in copper and gold.</p>
                     </div>
                   </div>
                 </div>
               </div>
 
               <div class="panel-media">
-                <h4 class="media-title">Scenery & Highlights</h4>
+                <h4 class="media-title">Scenery &amp; Highlights</h4>
                 <div class="photo-gallery">
                   <figure class="gallery-item">
-                    <img src="Image/General Grant Tree_1.jpg" alt="General Grant Tree — Nation's Christmas Tree in Kings Canyon" loading="lazy">
-                    <figcaption>The General Grant Tree, Kings Canyon</figcaption>
+                    <img src="Image/Eagle Lake hike _ Lake Tahoe_1.jpg" alt="Eagle Falls trail with stunning alpine views at Lake Tahoe" loading="lazy">
+                    <figcaption>Eagle Falls Trail &amp; Emerald Bay</figcaption>
                   </figure>
                   <figure class="gallery-item">
-                    <img src="Image/Burney Falls _ Lake Tahoe _ 1.jpg" alt="The roaring 129-foot Burney Falls cascade" loading="lazy">
-                    <figcaption>Burney Falls (Optional Saturday Loop)</figcaption>
+                    <img src="Image/Lake Tahoe_2.webp" alt="Emerald Bay panoramic view with Fannette Island at Lake Tahoe" loading="lazy">
+                    <figcaption>Emerald Bay &amp; Fannette Island</figcaption>
                   </figure>
                   <figure class="gallery-item">
-                    <img src="Image/Lake Tahoe_1.webp" alt="First evening arrival at Lake Tahoe cobalt blue waters" loading="lazy">
-                    <figcaption>First Tahoe Sunset Arrival</figcaption>
+                    <img src="Image/Lake Tahoe_1.webp" alt="Sand Harbor turquoise waters and granite boulders" loading="lazy">
+                    <figcaption>Sand Harbor — Morning Magic</figcaption>
                   </figure>
                 </div>
               </div>
@@ -444,82 +266,63 @@
             <div class="panel-grid">
               <div class="panel-details">
                 <div class="panel-meta-info">
-                  <span class="date-badge">Sunday, July 5th</span>
-                  <span class="distance-badge">0 mi driving · Full Tahoe Day · Night 3</span>
+                  <span class="date-badge">Sunday, July 6th</span>
+                  <span class="distance-badge">~280 mi · Night 3 at Sequoia</span>
                 </div>
-                <h3 class="day-heading">Day 3 — The Emerald Cascades & Sunset Cliffs</h3>
-                <p class="day-summary">With long drives behind you, Sunday is dedicated entirely to Lake Tahoe. A leisurely lakeside morning, a spectacular hike to Eagle Falls and Emerald Bay, and a golden-hour scramble to the top of Cave Rock for a 180-degree panoramic sunset.</p>
+                <h3 class="day-heading">Day 3 — Onward to Sequoia</h3>
+                <p class="day-summary">Leave Tahoe Sunday morning and drive south through the dramatic Sierra passes to Sequoia National Park. Cool off with a swim in the Kaweah River, conquer Moro Rock's staircase, and stand beneath the world's largest tree. Important: temperatures drop fast after sunset under the canopy — dry off and layer up.</p>
 
                 <div class="itinerary-details-grid">
                   <div class="detail-item">
-                    <strong>Focus:</strong>
-                    <span>Eagle Falls Trail, Emerald Bay & Fannette Island overlook, Cave Rock East Shore scramble.</span>
+                    <strong>Transit Corridor:</strong>
+                    <span>South through the Sierra passes from Lake Tahoe to Sequoia National Park (~5 hrs, ~280 mi).</span>
                   </div>
                   <div class="detail-item">
                     <strong>Night 3 Basecamp:</strong>
-                    <span>Final night in South Lake Tahoe. Celebrate the loop's high point.</span>
+                    <span>Hotel in the Sequoia area. Temperatures drop fast after sunset — switch into warm layers after swimming.</span>
                   </div>
                 </div>
 
                 <div class="timeline">
                   <div class="timeline-item">
-                    <div class="timeline-time">08:00 AM</div>
+                    <div class="timeline-time">8:30 AM</div>
                     <div class="timeline-content">
-                      <h4>Leisurely Lakeside Morning</h4>
-                      <p>Enjoy a long breakfast by the shore. Watch the morning light turn the water from deep black to brilliant teal. No rush — the whole day belongs to the lake.</p>
+                      <h4>Depart Lake Tahoe</h4>
+                      <p>Check out and begin the southbound drive through the Sierra Nevada passes. Approximately 5 hours of mountain scenery to Sequoia.</p>
                     </div>
                   </div>
                   <div class="timeline-item">
-                    <div class="timeline-time">10:30 AM</div>
+                    <div class="timeline-time">2:00 PM</div>
                     <div class="timeline-content">
-                      <h4>Eagle Falls &amp; Emerald Bay <span class="optional-tag">Optional · ~2h extra drive</span></h4>
-                      <div class="option-card" style="margin-top:8px;">
-                        <div class="option-header">
-                          <span class="option-badge">Optional Hike</span>
-                          <h4>Eagle Falls Trail</h4>
-                        </div>
-                        <p>Emerald Bay State Park is located on the <strong>west shore of Lake Tahoe (~15 miles from South Lake Tahoe)</strong> — around a 30-minute drive each way on winding scenic roads. Budget ~2 extra hours total for the round trip and the hike itself.</p>
-                        <p style="margin-top:8px;">The reward: a spectacular overlook of Tahoe's most brilliant teal inlet and Fannette Island sitting alone in the bay. The falls thunder alongside you on the climb up.</p>
-                        <div class="alert alert-warning" style="margin-top:10px;">
-                          <strong>Note:</strong> If your group prefers a more relaxed Sunday, skip the drive and enjoy kayaking or paddleboarding directly at the South Shore instead.
-                        </div>
+                      <h4>Kaweah River Swim &amp; Giant Sequoias</h4>
+                      <p>Arrive at Sequoia and cool off with a refreshing swim in the Kaweah River before tackling the park's iconic landmarks.</p>
+                      <p style="margin-top:8px;"><strong>Moro Rock:</strong> Climb the 350-step granite staircase for an unobstructed panorama of the Great Western Divide — the ultimate Sierra viewpoint.</p>
+                      <p style="margin-top:8px;"><strong>General Sherman Tree:</strong> Stand beneath the single largest living tree on Earth by volume (52,500 cubic feet of wood).</p>
+                      <div class="alert alert-warning" style="margin-top:10px;">
+                        <strong>🌡️ Cold After Dark:</strong> Temperatures drop fast once the sun sets under the Sequoia canopy. Dry off completely after swimming and switch into warm layers — hoodie, fleece, and pants — to avoid hypothermia risk.
                       </div>
                     </div>
                   </div>
                   <div class="timeline-item">
-                    <div class="timeline-time">02:00 PM</div>
+                    <div class="timeline-time">Evening</div>
                     <div class="timeline-content">
-                      <h4>Lakeside Afternoon Recreation</h4>
-                      <p>Return to South Lake Tahoe for a relaxed afternoon. Options include kayak and paddleboard rentals, swimming at Pope Beach, or simply walking the waterfront boardwalk.</p>
-                    </div>
-                  </div>
-                  <div class="timeline-item">
-                    <div class="timeline-time">05:30 PM</div>
-                    <div class="timeline-content">
-                      <h4>Cave Rock Sunset Scramble</h4>
-                      <p>Drive to the East Shore (Nevada side) and scramble to the top of Cave Rock. The granite summit provides an unforgettable, unobstructed 180-degree panorama as the sun sinks below the Sierra crest, painting the entire lake in copper and gold.</p>
-                    </div>
-                  </div>
-                  <div class="timeline-item">
-                    <div class="timeline-time">08:00 PM</div>
-                    <div class="timeline-content">
-                      <h4>Final Night Celebration</h4>
-                      <p>Return to South Lake Tahoe for a proper celebration dinner — your last night at altitude. Share the day's photos and toast the Sierra Ascent Loop.</p>
+                      <h4>Check Into Sequoia-Area Hotel</h4>
+                      <p>Settle in for Night 3 among the ancient giants. Enjoy a quiet evening under the redwood canopy and rest up for tomorrow's Kings Canyon morning.</p>
                     </div>
                   </div>
                 </div>
               </div>
 
               <div class="panel-media">
-                <h4 class="media-title">Scenery & Highlights</h4>
+                <h4 class="media-title">Scenery &amp; Highlights</h4>
                 <div class="photo-gallery">
                   <figure class="gallery-item">
-                    <img src="Image/Eagle Lake hike _ Lake Tahoe_1.jpg" alt="Eagle Lake hike with stunning alpine views at Lake Tahoe" loading="lazy">
-                    <figcaption>Eagle Falls Trail & Emerald Bay</figcaption>
+                    <img src="Image/Giant Sequoia Tree_1.jpg" alt="Misty Giant Sequoia forest at Sequoia National Park" loading="lazy">
+                    <figcaption>The Giant Forest — Ancient Sentinels</figcaption>
                   </figure>
                   <figure class="gallery-item">
-                    <img src="Image/Lake Tahoe_2.webp" alt="Emerald Bay panoramic view with Fannette Island at Lake Tahoe" loading="lazy">
-                    <figcaption>Emerald Bay & Fannette Island</figcaption>
+                    <img src="Image/Giant Sequoia Tree_2.jpg" alt="Giant Sequoia trunks towering into the forest canopy" loading="lazy">
+                    <figcaption>General Sherman — 52,500 cu·ft</figcaption>
                   </figure>
                 </div>
               </div>
@@ -531,66 +334,64 @@
             <div class="panel-grid">
               <div class="panel-details">
                 <div class="panel-meta-info">
-                  <span class="date-badge">Monday, July 6th</span>
-                  <span class="distance-badge">~475 mi · US-395 Return · Loop Complete</span>
+                  <span class="date-badge">Monday, July 7th</span>
+                  <span class="distance-badge">~290 mi · Return to Santa Ana</span>
                 </div>
-                <h3 class="day-heading">Day 4 — The US-395 Eastern Descent</h3>
-                <p class="day-summary">The final leg sweeps south along the spectacular Eastern Sierra escarpment on US-395 — one of America's most dramatic highway corridors. A lunch stopover in Mammoth Lakes breaks the drive before descending through the Alabama Hills and back to Orange County.</p>
+                <h3 class="day-heading">Day 4 — Kings Canyon &amp; Drive Home</h3>
+                <p class="day-summary">The final morning belongs to Kings Canyon — the General Grant Tree and the spectacular Zumwalt Meadow boardwalk along the glacier-carved canyon floor. Then it's a smooth 5-hour drive home via CA-99/I-5, closing the loop back in Santa Ana by late afternoon.</p>
 
                 <div class="itinerary-details-grid">
                   <div class="detail-item">
                     <strong>Transit Corridor:</strong>
-                    <span>US-395 South — Eastern Sierra escarpment past Mono Lake, Mammoth Lakes, Mt. Whitney, and the Alabama Hills.</span>
+                    <span>Kings Canyon (~30 mi from Sequoia) → CA-99 South / I-5 South back to Santa Ana (~5 hrs, ~290 mi).</span>
                   </div>
                   <div class="detail-item">
                     <strong>Loop Closure:</strong>
-                    <span>Completing the full 723-mile Sierra Nevada loop back to Santa Ana / Orange County.</span>
+                    <span>Completing the full Sierra Nevada loop back to Santa Ana by 5:30 PM.</span>
                   </div>
                 </div>
 
                 <div class="timeline">
                   <div class="timeline-item">
-                    <div class="timeline-time">09:00 AM</div>
+                    <div class="timeline-time">8:00 AM</div>
                     <div class="timeline-content">
-                      <h4>Lakeside Check-Out</h4>
-                      <p>A slow, peaceful final breakfast in South Lake Tahoe. Walk along the shoreline one last time before loading the vehicle and heading south on US-395.</p>
+                      <h4>Kings Canyon — Grant Grove &amp; Zumwalt Meadow</h4>
+                      <p><strong>General Grant Tree:</strong> Walk the short paved loop in Grant Grove to see the "Nation's Christmas Tree" — the second largest living tree on Earth and the only living thing designated a national shrine.</p>
+                      <p style="margin-top:8px;"><strong>Zumwalt Meadow Boardwalk:</strong> Stroll the boardwalk loop along the glacier-carved canyon floor and watch the Kings River reflect raw 8,000-ft granite walls overhead.</p>
                     </div>
                   </div>
                   <div class="timeline-item">
-                    <div class="timeline-time">12:15 PM</div>
+                    <div class="timeline-time">12:00 PM</div>
                     <div class="timeline-content">
-                      <h4>Mammoth Lakes Stopover (165 miles)</h4>
-                      <p>Arrive in the mountain village for a scenic lunch break. Two optional diversions:</p>
-                      <p><strong>Minaret Vista:</strong> Drive up to the overlook for a jaw-dropping view of the volcanic Ritter Range and Banner Peak.</p>
-                      <p><strong>Convict Lake:</strong> Stretch your legs with a short stroll along the crystalline, swirled granite banks of this hidden alpine gem.</p>
+                      <h4>Lunch &amp; Depart for Home</h4>
+                      <p>Grab a final lunch in the park or a foothill town, then head home via CA-99 South / I-5 South. The drive takes approximately 5 hours through the Central Valley.</p>
                     </div>
                   </div>
                   <div class="timeline-item">
-                    <div class="timeline-time">02:30 PM</div>
-                    <div class="timeline-content">
-                      <h4>Continue the Southern Descent</h4>
-                      <p>Head south on US-395, passing the Alabama Hills (classic Western film locations), Lone Pine, and the Owens Valley floor — towering Mt. Whitney and the Sierra crest to your right the entire way.</p>
-                    </div>
-                  </div>
-                  <div class="timeline-item">
-                    <div class="timeline-time">07:30 PM</div>
+                    <div class="timeline-time">5:30 PM</div>
                     <div class="timeline-content">
                       <h4>Loop Complete — Arrive Santa Ana</h4>
-                      <p>Return to Orange County with the Sierra Ascent Loop fully closed: 723 miles, 4 days, 3 nights, and a lifetime of mountain memories.</p>
+                      <p>Return to Orange County with the Sierra Ascent Loop fully closed: ~700 miles, 4 days, 3 nights, and memories of waterfalls, cobalt lakes, and ancient giants.</p>
                     </div>
                   </div>
                 </div>
               </div>
 
               <div class="panel-media">
-                <div class="no-media-card">
-                  <svg viewBox="0 0 24 24" width="48" height="48" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                    <circle cx="12" cy="12" r="10"></circle>
-                    <polyline points="12 6 12 12 16 14"></polyline>
-                  </svg>
-                  <h4>The Return Corridor</h4>
-                  <p>US-395 South — one of America's most spectacular highways. The Eastern Sierra crest accompanies you the entire 475 miles home.</p>
-                  <p style="margin-top:16px; font-size:0.85rem; opacity:0.6;">Estimated arrival: 7:30 PM · Loop complete ✓</p>
+                <h4 class="media-title">Scenery &amp; Highlights</h4>
+                <div class="photo-gallery">
+                  <figure class="gallery-item">
+                    <img src="Image/General Grant Tree_1.jpg" alt="General Grant Tree — Nation's Christmas Tree in Kings Canyon" loading="lazy">
+                    <figcaption>General Grant Tree — Kings Canyon</figcaption>
+                  </figure>
+                  <div class="no-media-card" style="margin-top:16px;">
+                    <svg viewBox="0 0 24 24" width="36" height="36" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                      <circle cx="12" cy="12" r="10"></circle>
+                      <polyline points="12 6 12 12 16 14"></polyline>
+                    </svg>
+                    <h4>Home by 5:30 PM</h4>
+                    <p>CA-99 / I-5 South · ~290 mi · ~5 hrs · Loop closed ✓</p>
+                  </div>
                 </div>
               </div>
             </div>
@@ -629,7 +430,7 @@
                 <label class="checkbox-container">
                   <input type="checkbox" id="item-caden-car">
                   <span class="checkmark"></span>
-                  <span class="item-text">Pre-trip: Car check/maintenance (Sat 06/15) <span class="item-badge info">Caden</span></span>
+                  <span class="item-text">Pre-trip: Car check/maintenance <span class="item-badge info">Caden</span></span>
                 </label>
               </li>
               <li>
@@ -641,31 +442,19 @@
               </li>
               <li>
                 <label class="checkbox-container">
-                  <input type="checkbox" id="item-maps">
-                  <span class="checkmark"></span>
-                  <span class="item-text">Offline GPS Maps pre-loaded <span class="item-badge required">Important</span></span>
-                </label>
-              </li>
-              <li>
-                <label class="checkbox-container">
                   <input type="checkbox" id="item-burney">
                   <span class="checkmark"></span>
-                  <span class="item-text">Burney Falls Day-Use Pass ($11) <span class="item-badge warning">If Saturday Loop</span></span>
+                  <span class="item-text">Burney Falls parking reservation (Day 1) <span class="item-badge required">Pre-Book 2026</span></span>
                 </label>
               </li>
               <li>
                 <label class="checkbox-container">
                   <input type="checkbox" id="item-funds">
                   <span class="checkmark"></span>
-                  <span class="item-text">Prepare $500 cash / trip funds <span class="item-badge required">Recommended</span></span>
+                  <span class="item-text">Prepare trip funds ($500) <span class="item-badge required">Recommended</span></span>
                 </label>
               </li>
             </ul>
-            <!-- Add Item Form (Hidden until Auth) -->
-            <div class="add-item-form" style="display:none;" data-target="list-essentials">
-              <input type="text" placeholder="Add custom item..." class="add-item-input">
-              <button class="btn-add-item">+</button>
-            </div>
           </div>
 
           <!-- Food & Hydration Card -->
@@ -689,29 +478,17 @@
                 <label class="checkbox-container">
                   <input type="checkbox" id="item-cooler">
                   <span class="checkmark"></span>
-                  <span class="item-text">Heavy-duty food cooler & solid ice blocks <span class="item-badge info">Stocked</span></span>
+                  <span class="item-text">Cooler & ice blocks <span class="item-badge info">Stocked</span></span>
                 </label>
               </li>
               <li>
                 <label class="checkbox-container">
                   <input type="checkbox" id="item-water">
                   <span class="checkmark"></span>
-                  <span class="item-text">Reusable water flasks (min 6L each) <span class="item-badge required">Individual</span></span>
-                </label>
-              </li>
-              <li>
-                <label class="checkbox-container">
-                  <input type="checkbox" id="item-snacks">
-                  <span class="checkmark"></span>
-                  <span class="item-text">Dry snack bin (trail mix, bars, nuts) <span class="item-badge info">Stocked</span></span>
+                  <span class="item-text">Reusable water flasks (min 6L/person) <span class="item-badge required">Individual</span></span>
                 </label>
               </li>
             </ul>
-            <!-- Add Item Form (Hidden until Auth) -->
-            <div class="add-item-form" style="display:none;" data-target="list-food">
-              <input type="text" placeholder="Add custom item..." class="add-item-input">
-              <button class="btn-add-item">+</button>
-            </div>
           </div>
 
           <!-- Apparel & Gear Card -->
@@ -735,35 +512,14 @@
                 <label class="checkbox-container">
                   <input type="checkbox" id="item-clothes">
                   <span class="checkmark"></span>
-                  <span class="item-text">4 days of clothes (warm layers + swimwear) <span class="item-badge required">Individual</span></span>
-                </label>
-              </li>
-              <li>
-                <label class="checkbox-container">
-                  <input type="checkbox" id="item-hiking-shoes">
-                  <span class="checkmark"></span>
-                  <span class="item-text">Rugged hiking boots (Moro Rock & Cave Rock) <span class="item-badge required">Individual</span></span>
-                </label>
-              </li>
-              <li>
-                <label class="checkbox-container">
-                  <input type="checkbox" id="item-jacket">
-                  <span class="checkmark"></span>
-                  <span class="item-text">Heavy fleece & windbreaker (45°F nights) <span class="item-badge required">Individual</span></span>
+                  <span class="item-text">4 days clothes (Warm layers!) <span class="item-badge required">Individual</span></span>
                 </label>
               </li>
               <li>
                 <label class="checkbox-container">
                   <input type="checkbox" id="item-swimwear">
                   <span class="checkmark"></span>
-                  <span class="item-text">Swimsuit & quick-dry towel <span class="item-badge info">For Tahoe</span></span>
-                </label>
-              </li>
-              <li>
-                <label class="checkbox-container">
-                  <input type="checkbox" id="item-sunscreen">
-                  <span class="checkmark"></span>
-                  <span class="item-text">High-SPF sunscreen & bug spray <span class="item-badge required">Individual</span></span>
+                  <span class="item-text">Swimsuit & quick-dry towel <span class="item-badge info">Kaweah River + Tahoe</span></span>
                 </label>
               </li>
               <li>
@@ -774,11 +530,6 @@
                 </label>
               </li>
             </ul>
-            <!-- Add Item Form (Hidden until Auth) -->
-            <div class="add-item-form" style="display:none;" data-target="list-apparel">
-              <input type="text" placeholder="Add custom item..." class="add-item-input">
-              <button class="btn-add-item">+</button>
-            </div>
           </div>
         </div>
       </div>
@@ -795,33 +546,33 @@
 
             <div class="copy-box-container">
               <pre class="copy-box" id="share-text-box">🏔️ SIERRA ASCENT ROAD TRIP PLAN 🏔️
-Departing Santa Ana: Friday morning, July 4th @ 00:00 AM (midnight Thursday night!)
-Trip Length: 4 Days & 3 Nights of high-altitude exploration!
+Departing Santa Ana: Friday July 4th @ 12:00 AM (midnight Thursday night!)
+Trip Length: 4 Days & 3 Nights — July 4–7, 2026
 
-📍 OUR STOPS:
-1. Santa Ana (00:00 AM departure basecamp)
-2. Sequoia National Park (staying Night 1 in a hotel!)
-3. Kings Canyon National Park (Saturday morning Grant Grove hike)
-4. Lake Tahoe & Emerald Bay (staying Nights 2 & 3 at the lake!)
-5. Mammoth Lakes (Monday afternoon return stopover)
+📍 OUR ROUTE:
+Day 1 (Fri Jul 4): Santa Ana → Burney Falls → Lake Tahoe (Night 1)
+Day 2 (Sat Jul 5): Full Tahoe Day — Sand Harbor, Secret Cove, Eagle Falls, Cave Rock (Night 2)
+Day 3 (Sun Jul 6): Lake Tahoe → Sequoia NP — Kaweah River swim, Moro Rock, Gen. Sherman (Night 3)
+Day 4 (Mon Jul 7): Kings Canyon (Gen. Grant Tree + Zumwalt Meadow) → Home by 5:30 PM
 
 🥾 KEY HIKES & SIGHTS:
-• Climb Moro Rock granite staircase for a misty sunrise panorama
-• Stand under the General Sherman & General Grant trees
-• Hike to Eagle Falls & explore stunning Emerald Bay
-• Scramble to Cave Rock for 180-degree Tahoe sunset views
-• Optional: road trip to the majestic 129-ft Burney Falls ($11 fee)
-• Scenic stop at Convict Lake in Mammoth on the drive back
+• Burney Falls — 129-ft spring-fed cascade, 100M gallons/day (pre-book parking!)
+• Sand Harbor State Park — turquoise water & granite boulders (go EARLY!)
+• Secret Cove — hidden Caribbean-colored beach (1-mile trail)
+• Eagle Falls Trail & Emerald Bay overlook — build in 2hr holiday traffic buffer
+• Cave Rock sunset scramble — 180° panorama over the Sierra
+• Kaweah River swim + Moro Rock staircase + General Sherman Tree
+• General Grant Tree ("Nation's Christmas Tree") + Zumwalt Meadow boardwalk
 
-🎒 PREPARATION:
-• Pack clothes for 4 days & 3 nights (include HEAVY layers for cold nights at 6,200ft!)
-• Bring a cooler with food & solid ice blocks for all 4 days
-• Reusable water flask (min 6L per person — altitude dehydration is real!)
-• High-SPF sunscreen and bug spray for the hikes
-• Download offline maps before we roll out (zero cell service in the parks!)
-• Budget ~$500 for food, gas, fees & activities
+🎒 PACKING ESSENTIALS:
+• Warm clothes & swimming suit
+• 6 liters of water capacity per person (reusable bottles/flasks)
+• Personal sunscreen and bug spray — everyone packs their own
+• First-aid kit (trip organizer)
+• Warm fleece layers for cold Sequoia evenings — especially after the Sunday swim!
+• No sleeping bags needed (hotels each night)
 
-Let's do this! 🚗💨 #SierraAscent #Roadtrip #Sequoia #LakeTahoe #Mammoth</pre>
+Let's do this! 🚗💨 #SierraAscent #Roadtrip #BurneyFalls #LakeTahoe #Sequoia #KingsCanyon</pre>
             </div>
 
             <button class="btn btn-primary" id="btn-copy-share">
@@ -855,9 +606,9 @@ Let's do this! 🚗💨 #SierraAscent #Roadtrip #Sequoia #LakeTahoe #Mammoth</pr
 
   <footer class="app-footer">
     <div class="section-container text-center">
-      <p class="footer-title">Sierra Ascent Loop: Santa Ana → Sequoia → Tahoe → Mammoth 2026</p>
-      <p class="footer-meta">The Ultimate Western & Eastern Sierra Nevada 4-Day Expedition</p>
-      <p class="footer-meta" style="margin-top: 8px; font-size: 0.75rem; opacity: 0.7;">Co-authored by Samuel Do & Antigravity</p>
+      <p class="footer-title">Sierra Ascent Loop: Santa Ana &rarr; Burney Falls &rarr; Tahoe &rarr; Sequoia &rarr; Kings Canyon 2026</p>
+      <p class="footer-meta">The Ultimate Northern California 4-Day Sierra Nevada Expedition &middot; July 4&ndash;7, 2026</p>
+      <p class="footer-meta" style="margin-top: 8px; font-size: 0.75rem; opacity: 0.7;">Co-authored by Samuel Do &amp; Antigravity</p>
     </div>
   </footer>
 

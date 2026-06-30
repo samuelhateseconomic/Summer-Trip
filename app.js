@@ -7,38 +7,32 @@ document.addEventListener('DOMContentLoaded', () => {
     'node-santa-ana': {
       title: 'Santa Ana, CA',
       badge: 'Departure & Return Base',
-      description: 'The loop launches at 00:00 AM Friday, July 3rd — midnight departure bypasses 100% of Southern California Friday morning gridlock. Loop closes here Monday evening after 723 miles.',
+      description: 'The loop launches at 12:00 AM Friday, July 4th — midnight departure bypasses 100% of Southern California holiday gridlock. Loop closes here Monday evening (Jul 7) after ~700 miles.',
       day: 1
     },
     'node-sequoia': {
       title: 'Sequoia National Park',
-      badge: 'Night 1 · Friday July 3rd',
-      description: 'Arrive at dawn (5:00 AM) for an uncrowded misty morning among the world\'s largest trees. Moro Rock sunrise, General Sherman Tree, and Tunnel Log. Sleep Night 1 in the ancient giant forest at 6,200 ft.',
-      day: 1
+      badge: 'Night 3 · Sunday July 6th',
+      description: 'Arrive Sunday afternoon (~2 PM) after driving south from Tahoe through the Sierra passes. Cool off in the Kaweah River, conquer Moro Rock\'s 350-step staircase, and stand beneath the General Sherman Tree — the largest living thing on Earth. Layer up after swimming; temperatures drop fast at 6,200 ft after dark.',
+      day: 3
     },
     'node-kings-canyon': {
       title: 'Kings Canyon National Park',
-      badge: 'Day 2 · Saturday Morning',
-      description: 'Drive the historic Generals Highway north (30 mi, ~1.2h). Explore the General Grant Grove and stroll the Zumwalt Meadow boardwalk along the glacier-carved canyon floor before pushing north to Lake Tahoe.',
-      day: 2
+      badge: 'Day 4 · Monday Morning',
+      description: 'The final morning of the loop. Drive the Generals Highway north 30 mi from Sequoia. Visit the General Grant Tree — the "Nation\'s Christmas Tree" — and stroll the Zumwalt Meadow boardwalk along the glacier-carved canyon floor before heading home via CA-99/I-5.',
+      day: 4
     },
     'node-burney': {
       title: 'Burney Falls',
-      badge: 'Optional Saturday Detour',
-      description: '129-ft spring-fed basalt cascade — 100 million gallons per day. Located ~2h north of Kings Canyon. Day-use fee: $11. Adds ~4 hours of driving vs. the direct Tahoe route.',
-      day: 2
+      badge: 'Day 1 · Friday Morning',
+      description: '129-ft spring-fed basalt cascade — 100 million gallons per day. A confirmed stop on Day 1 en route from Santa Ana to Tahoe. Walk the flat paved loop trail. Pre-book your 2026 day-use parking reservation — it\'s a popular July 4th holiday destination.',
+      day: 1
     },
     'node-tahoe': {
       title: 'Lake Tahoe, CA/NV',
-      badge: 'Nights 2 & 3 · Resort Base',
-      description: 'Arrive Saturday evening for 2 nights at the cobalt alpine lake. Sunday is entirely dedicated to the optional Eagle Falls hike (~2h extra drive), Emerald Bay, lakeside recreation, and the Cave Rock 180-degree sunset scramble.',
-      day: 3
-    },
-    'node-mammoth': {
-      title: 'Mammoth Lakes, CA',
-      badge: 'Day 4 · Return Stopover',
-      description: 'Monday return stopover on US-395 South (165 mi from Tahoe). Lunch in the mountain village, optional Minaret Vista viewpoint, and a scenic walk at Convict Lake before the final descent to Orange County.',
-      day: 4
+      badge: 'Nights 1 & 2 · Resort Base',
+      description: 'Arrive Friday evening (Night 1) after Burney Falls. Saturday (Day 2) is a full Tahoe day: Sand Harbor at 8 AM, Secret Cove Beach, Emerald Bay overlook + Eagle Falls, and the Cave Rock sunset scramble at 7:30 PM for an unforgettable 180° panorama.',
+      day: 1
     }
   };
 
@@ -253,10 +247,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Day → which node to highlight on the map
   const dayToNode = {
-    1: 'node-sequoia',
-    2: 'node-kings-canyon',
-    3: 'node-tahoe',
-    4: 'node-mammoth'
+    1: 'node-tahoe',
+    2: 'node-tahoe',
+    3: 'node-sequoia',
+    4: 'node-kings-canyon'
   };
 
   dayTabs.forEach(tab => {
