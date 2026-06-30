@@ -10,38 +10,38 @@ document.addEventListener('DOMContentLoaded', () => {
       description: 'The loop launches at 12:00 AM Friday, July 4th — midnight departure bypasses 100% of Southern California holiday gridlock. Loop closes here Monday evening (Jul 7) after ~700 miles.',
       day: 1
     },
+    'node-tahoe': {
+      title: 'West Shore Lake Tahoe',
+      badge: 'Day 1 · Morning Stop',
+      description: 'First stop of the loop after a 7–7.5h direct drive up I-5. Emerald Bay overlook at 7 AM — the largest alpine lake in North America, second-deepest in the U.S. Optional: Vikingsholm mansion (steep 1-mile trail down). Eagle Falls hike right after from the same parking area. Lunch in South Lake Tahoe at noon before crossing to Reno.',
+      day: 1
+    },
+    'node-reno': {
+      title: 'Reno, NV',
+      badge: 'Nights 1 & 2 · Airbnb Base',
+      description: 'Arrive Friday ~2 PM after West Shore Tahoe and a 1-hour drive via US-50 East over Spooner Summit. Base for both nights. Saturday (Day 2) is a full East Shore loop: Sand Harbor (reservation required before 10:30 AM), Secret Cove, Skunk Harbor hike (pack it out), and Cave Rock sunset scramble — back to Reno by 9 PM.',
+      day: 1
+    },
     'node-sequoia': {
       title: 'Sequoia National Park',
       badge: 'Night 3 · Sunday July 6th',
-      description: 'Arrive Sunday afternoon (~2 PM) after driving south from Tahoe through the Sierra passes. Cool off in the Kaweah River, conquer Moro Rock\'s 350-step staircase, and stand beneath the General Sherman Tree — the largest living thing on Earth. Layer up after swimming; temperatures drop fast at 6,200 ft after dark.',
+      description: 'Depart Reno Sunday at 8:30 AM (~5h south via US-395/CA-168). Cool off in the Kaweah River, conquer Moro Rock\'s 350-step staircase, and stand beneath the General Sherman Tree — the largest living thing on Earth. Layer up after swimming; temperatures drop fast at 6,200 ft after dark.',
       day: 3
     },
     'node-kings-canyon': {
       title: 'Kings Canyon National Park',
       badge: 'Day 4 · Monday Morning',
-      description: 'The final morning of the loop. Drive the Generals Highway north 30 mi from Sequoia. Visit the General Grant Tree — the "Nation\'s Christmas Tree" — and stroll the Zumwalt Meadow boardwalk along the glacier-carved canyon floor before heading home via CA-99/I-5.',
+      description: 'The final morning of the loop. Drive the Generals Highway north 30 mi from Sequoia. Visit the General Grant Tree — the "Nation\'s Christmas Tree" — and stroll the Zumwalt Meadow boardwalk before heading home via CA-99/I-5 (~5h, ~290 mi).',
       day: 4
-    },
-    'node-burney': {
-      title: 'Burney Falls',
-      badge: 'Day 1 · Friday Morning',
-      description: '129-ft spring-fed basalt cascade — 100 million gallons per day. A confirmed stop on Day 1 en route from Santa Ana to Tahoe. Walk the flat paved loop trail. Pre-book your 2026 day-use parking reservation — it\'s a popular July 4th holiday destination.',
-      day: 1
-    },
-    'node-tahoe': {
-      title: 'Lake Tahoe, CA/NV',
-      badge: 'Nights 1 & 2 · Resort Base',
-      description: 'Arrive Friday evening (Night 1) after Burney Falls. Saturday (Day 2) is a full Tahoe day: Sand Harbor at 8 AM, Secret Cove Beach, Emerald Bay overlook + Eagle Falls, and the Cave Rock sunset scramble at 7:30 PM for an unforgettable 180° panorama.',
-      day: 1
     }
   };
 
   // ═══════════════════════════════════════════════
   // SVG PATH ELEMENTS
   // ═══════════════════════════════════════════════
-  const seg1Path   = document.getElementById('outbound-sa-burney');    // SA → Burney
-  const seg2Path   = document.getElementById('outbound-burney-tahoe'); // Burney → Tahoe
-  const seg3Path   = document.getElementById('outbound-tahoe-seq');    // Tahoe → Sequoia
+  const seg1Path   = document.getElementById('outbound-sa-tahoe');     // SA → West Shore Tahoe
+  const seg2Path   = document.getElementById('outbound-tahoe-reno');   // West Shore → Reno
+  const seg3Path   = document.getElementById('outbound-reno-seq');     // Reno → Sequoia
   const seg4Path   = document.getElementById('outbound-seq-kc');       // Sequoia → KC
   const returnPath = document.getElementById('return-route');           // KC → Home
 
@@ -70,13 +70,13 @@ document.addEventListener('DOMContentLoaded', () => {
         // Nothing drawn
         break;
 
-      case 'node-burney':
-        // Fill seg1 fully (SA → Burney)
+      case 'node-tahoe':
+        // Fill seg1 (SA → West Shore Tahoe)
         o1 = 0;
         break;
 
-      case 'node-tahoe':
-        // Fill seg1 + seg2 (SA → Burney → Tahoe)
+      case 'node-reno':
+        // Fill seg1 + seg2 (SA → West Shore → Reno)
         o1 = 0; o2 = 0;
         break;
 
@@ -156,8 +156,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Day → which node to highlight on the map
   const dayToNode = {
-    1: 'node-tahoe',
-    2: 'node-tahoe',
+    1: 'node-reno',
+    2: 'node-reno',
     3: 'node-sequoia',
     4: 'node-kings-canyon'
   };

@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Sierra Ascent Loop: The ultimate 4-day, 3-night Northern California road trip from Santa Ana through Burney Falls, Lake Tahoe, Sequoia, and Kings Canyon National Parks.">
-  <title>Sierra Ascent Loop: Santa Ana → Burney Falls → Tahoe → Sequoia → Kings Canyon 2026</title>
+  <meta name="description" content="Sierra Ascent Loop: The ultimate 4-day, 3-night road trip from Santa Ana — West Shore Tahoe, Reno Airbnb base, East Shore Tahoe, Sequoia, and Kings Canyon National Parks. July 4–7, 2026.">
+  <title>Sierra Ascent Loop: Santa Ana → Lake Tahoe → Reno → Sequoia → Kings Canyon 2026</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -15,9 +15,9 @@
   <!-- ═══════════════════════════════ HERO ═══════════════════════════════ -->
   <header class="hero-banner" style="background-image: linear-gradient(rgba(0,0,0,0.45), rgba(18,30,22,0.95)), url('Image/Lake Tahoe_2.webp');">
     <div class="hero-content">
-      <span class="hero-subtitle">Northern California Sierra Nevada Loop</span>
+      <span class="hero-subtitle">Lake Tahoe &amp; Sierra Nevada Loop</span>
       <h1 class="hero-title">Sierra Ascent</h1>
-      <p class="hero-description">The ultimate 4-day, 3-night loop — midnight launch from Santa Ana, a roaring 129-ft waterfall, cobalt alpine Tahoe waters, ancient sequoias, and a glacier-carved canyon. July 4–7, 2026.</p>
+      <p class="hero-description">The ultimate 4-day, 3-night loop — midnight launch from Santa Ana, Emerald Bay at sunrise, a Reno Airbnb base for two nights of East Shore exploration, ancient sequoias, and a glacier-carved canyon. July 4–7, 2026.</p>
 
       <div class="metrics-grid">
         <div class="metric-card" id="metric-distance">
@@ -56,10 +56,11 @@
         <div class="map-wrapper">
           <svg viewBox="0 -52 1020 322" class="route-map-svg" id="route-map-svg">
             <defs>
-              <!-- Outbound gradient: Orange → Blue → Green -->
+              <!-- Outbound gradient: Orange → Blue → Teal → Green -->
               <linearGradient id="outbound-gradient" x1="0%" y1="100%" x2="100%" y2="0%">
                 <stop offset="0%"   stop-color="#ef7e32" />
-                <stop offset="50%"  stop-color="#0288d1" />
+                <stop offset="40%"  stop-color="#0288d1" />
+                <stop offset="70%"  stop-color="#7e57c2" />
                 <stop offset="100%" stop-color="#4caf50" />
               </linearGradient>
               <!-- Return gradient: Green → Orange -->
@@ -75,57 +76,52 @@
             </defs>
 
             <!-- ─── Shadow Paths ─── -->
-            <!-- SA → Burney Falls shadow -->
-            <path id="shadow-sa-burney"
-                  d="M 90,215 C 200,160 310,60 493,-18"
+            <!-- SA → West Shore Tahoe shadow -->
+            <path d="M 90,215 C 220,150 330,40 450,10"
                   fill="none" stroke="#1d2e24" stroke-width="10" stroke-linecap="round"/>
-            <!-- Burney → Tahoe shadow -->
-            <path id="shadow-burney-tahoe"
-                  d="M 493,-18 Q 548,8 598,56"
+            <!-- West Shore → Reno shadow -->
+            <path d="M 450,10 Q 530,0 600,20"
                   fill="none" stroke="#1d2e24" stroke-width="10" stroke-linecap="round"/>
-            <!-- Tahoe → Sequoia shadow -->
-            <path id="shadow-tahoe-seq"
-                  d="M 598,56 C 640,100 660,140 680,175"
+            <!-- Reno → Sequoia shadow -->
+            <path d="M 600,20 C 640,80 660,130 680,175"
                   fill="none" stroke="#1d2e24" stroke-width="10" stroke-linecap="round"/>
             <!-- Sequoia → Kings Canyon shadow -->
-            <path id="shadow-seq-kc"
-                  d="M 680,175 C 700,155 730,135 760,120"
+            <path d="M 680,175 C 705,155 735,135 760,120"
                   fill="none" stroke="#1d2e24" stroke-width="10" stroke-linecap="round"/>
             <!-- Return: KC → Home shadow -->
-            <path id="shadow-kc-home"
-                  d="M 760,120 C 820,160 870,185 920,218"
+            <path d="M 760,120 C 820,160 870,185 920,218"
                   fill="none" stroke="#1d2e24" stroke-width="10" stroke-linecap="round"/>
             <!-- Loop-close dashed line -->
-            <path d="M 920,220 C 715,240 400,242 90,220"
+            <path d="M 920,220 C 715,245 400,245 90,220"
                   fill="none" stroke="rgba(255,255,255,0.07)" stroke-width="2"
                   stroke-dasharray="10,7" stroke-linecap="round"/>
 
             <!-- ─── Active Paths (animated, split into segments) ─── -->
-            <!-- Segment 1: Santa Ana → Burney Falls -->
-            <path id="outbound-sa-burney"
-                  d="M 90,215 C 200,160 310,60 493,-18"
+            <!-- Segment 1: Santa Ana → West Shore Tahoe (~7h direct) -->
+            <path id="outbound-sa-tahoe"
+                  d="M 90,215 C 220,150 330,40 450,10"
                   fill="none" stroke="url(#outbound-gradient)" stroke-width="6"
                   stroke-linecap="round"
                   style="transition: stroke-dashoffset 0.7s cubic-bezier(0.4,0,0.2,1);"/>
-            <!-- Segment 2: Burney Falls → Lake Tahoe -->
-            <path id="outbound-burney-tahoe"
-                  d="M 493,-18 Q 548,8 598,56"
+            <!-- Segment 2: West Shore → Reno (~1h via US-50) -->
+            <path id="outbound-tahoe-reno"
+                  d="M 450,10 Q 530,0 600,20"
                   fill="none" stroke="url(#outbound-gradient)" stroke-width="6"
                   stroke-linecap="round"
                   style="transition: stroke-dashoffset 0.7s cubic-bezier(0.4,0,0.2,1);"/>
-            <!-- Segment 3: Lake Tahoe → Sequoia -->
-            <path id="outbound-tahoe-seq"
-                  d="M 598,56 C 640,100 660,140 680,175"
+            <!-- Segment 3: Reno → Sequoia (~5h south) -->
+            <path id="outbound-reno-seq"
+                  d="M 600,20 C 640,80 660,130 680,175"
                   fill="none" stroke="url(#outbound-gradient)" stroke-width="6"
                   stroke-linecap="round"
                   style="transition: stroke-dashoffset 0.7s cubic-bezier(0.4,0,0.2,1);"/>
             <!-- Segment 4: Sequoia → Kings Canyon -->
             <path id="outbound-seq-kc"
-                  d="M 680,175 C 700,155 730,135 760,120"
+                  d="M 680,175 C 705,155 735,135 760,120"
                   fill="none" stroke="url(#outbound-gradient)" stroke-width="6"
                   stroke-linecap="round"
                   style="transition: stroke-dashoffset 0.7s cubic-bezier(0.4,0,0.2,1);"/>
-            <!-- Return: Kings Canyon → Santa Ana -->
+            <!-- Return: Kings Canyon → Santa Ana (CA-99/I-5) -->
             <path id="return-route"
                   d="M 760,120 C 820,160 870,185 920,218"
                   fill="none" stroke="url(#return-gradient)" stroke-width="6"
@@ -133,34 +129,34 @@
                   style="transition: stroke-dashoffset 0.7s cubic-bezier(0.4,0,0.2,1);"/>
 
             <!-- ─── Distance Labels ─── -->
-            <!-- SA → Burney Falls -->
-            <g class="path-label" transform="translate(270,100)">
+            <!-- SA → West Shore Tahoe -->
+            <g class="path-label" transform="translate(250,110)">
               <rect x="-64" y="-18" width="128" height="26" rx="13" fill="#1b2e22" stroke="#ef7e32" stroke-width="1"/>
-              <text text-anchor="middle" fill="#ffb74d" font-size="11" font-weight="600" y="-1">~500 mi | ~10h drive</text>
+              <text text-anchor="middle" fill="#ffb74d" font-size="11" font-weight="600" y="-1">~430 mi | ~7.5h</text>
             </g>
-            <!-- Burney → Tahoe -->
-            <g class="path-label" transform="translate(548,22)">
-              <rect x="-52" y="-16" width="104" height="24" rx="12" fill="#1b2e22" stroke="#ff7043" stroke-width="1"/>
-              <text text-anchor="middle" fill="#ff8a65" font-size="10" font-weight="600" y="-1">~2.5h south</text>
+            <!-- West Shore → Reno -->
+            <g class="path-label" transform="translate(525,0)">
+              <rect x="-52" y="-16" width="104" height="24" rx="12" fill="#1b2e22" stroke="#7e57c2" stroke-width="1"/>
+              <text text-anchor="middle" fill="#b39ddb" font-size="10" font-weight="600" y="-1">~1h to Reno</text>
             </g>
-            <!-- Tahoe → Sequoia -->
-            <g class="path-label" transform="translate(650,105)">
+            <!-- Reno → Sequoia -->
+            <g class="path-label" transform="translate(648,95)">
               <rect x="-54" y="-18" width="108" height="26" rx="13" fill="#1b2e22" stroke="#0288d1" stroke-width="1"/>
               <text text-anchor="middle" fill="#29b6f6" font-size="11" font-weight="600" y="-1">~280 mi | ~5h</text>
             </g>
             <!-- Sequoia → KC -->
-            <g class="path-label" transform="translate(720,148)">
+            <g class="path-label" transform="translate(720,152)">
               <rect x="-50" y="-16" width="100" height="24" rx="12" fill="#1b2e22" stroke="#81c784" stroke-width="1"/>
               <text text-anchor="middle" fill="#a5d6a7" font-size="10" font-weight="600" y="-1">30 mi | ~1.2h</text>
             </g>
             <!-- KC → Home (return) -->
-            <g class="path-label" transform="translate(500,248)">
-              <rect x="-100" y="-17" width="200" height="25" rx="12" fill="#1b2e22" stroke="rgba(239,126,50,0.4)" stroke-width="1"/>
+            <g class="path-label" transform="translate(500,252)">
+              <rect x="-102" y="-17" width="204" height="25" rx="12" fill="#1b2e22" stroke="rgba(239,126,50,0.4)" stroke-width="1"/>
               <text text-anchor="middle" fill="#ffa726" font-size="11" font-weight="500" y="-2">← ~290 mi | ~5h home via CA-99/I-5</text>
             </g>
 
             <!-- ─── Direction Arrows ─── -->
-            <text transform="translate(160,175)" fill="rgba(239,126,50,0.6)" font-size="14">↗</text>
+            <text transform="translate(155,180)" fill="rgba(239,126,50,0.6)" font-size="14">↗</text>
             <text transform="translate(840,175)" fill="rgba(76,175,80,0.6)" font-size="14">↘</text>
 
             <!-- ═══════ MAP NODES ═══════ -->
@@ -173,20 +169,20 @@
               <text y="52" text-anchor="middle" fill="#888" font-size="10" font-weight="500">Departure &amp; Return</text>
             </g>
 
-            <!-- Node: Burney Falls (Day 1 – confirmed stop) -->
-            <g class="map-node" id="node-burney" transform="translate(493, -18)" data-day="1">
-              <circle r="17" fill="#16251b" stroke="#ff7043" stroke-width="3"/>
-              <circle r="7" fill="#ff7043"/>
-              <text y="30" text-anchor="middle" fill="#fff" font-size="12" font-weight="700">Burney Falls</text>
-              <text y="44" text-anchor="middle" fill="#888" font-size="10" font-weight="500">Day 1 · Morning Stop</text>
+            <!-- Node: West Shore Tahoe (Day 1 morning) -->
+            <g class="map-node" id="node-tahoe" transform="translate(450, 10)" data-day="1">
+              <circle r="17" fill="#16251b" stroke="#0288d1" stroke-width="3"/>
+              <circle r="7" fill="#0288d1"/>
+              <text y="-22" text-anchor="middle" fill="#fff" font-size="12" font-weight="700">West Shore Tahoe</text>
+              <text y="-8" text-anchor="middle" fill="#888" font-size="10" font-weight="500">Day 1 · Emerald Bay + Eagle Falls</text>
             </g>
 
-            <!-- Node: Lake Tahoe (Nights 1 & 2) -->
-            <g class="map-node" id="node-tahoe" transform="translate(598, 56)" data-day="1">
-              <circle r="20" fill="#16251b" stroke="#0288d1" stroke-width="4"/>
-              <circle r="9" fill="#0288d1"/>
-              <text y="38" text-anchor="middle" fill="#fff" font-size="12" font-weight="700">Lake Tahoe</text>
-              <text y="52" text-anchor="middle" fill="#888" font-size="10" font-weight="500">Nights 1 &amp; 2 · Resort Base</text>
+            <!-- Node: Reno (Nights 1 & 2 Airbnb) -->
+            <g class="map-node" id="node-reno" transform="translate(600, 20)" data-day="1">
+              <circle r="20" fill="#16251b" stroke="#7e57c2" stroke-width="4"/>
+              <circle r="9" fill="#7e57c2"/>
+              <text y="36" text-anchor="middle" fill="#fff" font-size="12" font-weight="700">Reno, NV</text>
+              <text y="50" text-anchor="middle" fill="#888" font-size="10" font-weight="500">Nights 1 &amp; 2 · Airbnb Base</text>
             </g>
 
             <!-- Node: Sequoia NP (Night 3) -->
@@ -234,11 +230,11 @@
           <div class="day-tabs" role="tablist">
             <button class="day-tab active" id="tab-day1" role="tab" aria-selected="true" aria-controls="panel-day1" data-day="1">
               <span class="tab-day-num">Day 1</span>
-              <span class="tab-day-title">Burney &amp; Tahoe</span>
+              <span class="tab-day-title">West Shore &amp; Reno</span>
             </button>
             <button class="day-tab" id="tab-day2" role="tab" aria-selected="false" aria-controls="panel-day2" data-day="2">
               <span class="tab-day-num">Day 2</span>
-              <span class="tab-day-title">Tahoe Highlights</span>
+              <span class="tab-day-title">East Shore Loop</span>
             </button>
             <button class="day-tab" id="tab-day3" role="tab" aria-selected="false" aria-controls="panel-day3" data-day="3">
               <span class="tab-day-num">Day 3</span>
@@ -259,19 +255,19 @@
               <div class="panel-details">
                 <div class="panel-meta-info">
                   <span class="date-badge">Friday, July 4th</span>
-                  <span class="distance-badge">~500 mi · Night 1 at Lake Tahoe</span>
+                  <span class="distance-badge">~430 mi · Night 1 at Reno Airbnb</span>
                 </div>
-                <h3 class="day-heading">Day 1 — Drive North &amp; Settle into Tahoe</h3>
-                <p class="day-summary">The loop begins at midnight Thursday — a smart departure that clears 100% of Southern California Fourth of July gridlock. A morning detour to the roaring 129-ft Burney Falls breaks the journey before arriving lakeside at Tahoe by late afternoon.</p>
+                <h3 class="day-heading">Day 1 &mdash; West Shore &amp; The Drive into Reno</h3>
+                <p class="day-summary">Midnight departure from Santa Ana straight up I-5 North &mdash; no Burney Falls detour, so the drive is a direct 7&ndash;7.5 hours. Catch Emerald Bay at first light, hike Eagle Falls, grab lunch in South Lake Tahoe, then cross the Sierra into Reno for the first of two nights at the Airbnb.</p>
 
                 <div class="itinerary-details-grid">
                   <div class="detail-item">
                     <strong>Transit Corridor:</strong>
-                    <span>I-5 N through the Central Valley → CA-299 E to Burney Falls → Lassen Corridor south toward Lake Tahoe (~2.5 hrs from Burney).</span>
+                    <span>I-5 N → CA-99 N → US-50 West Shore (Emerald Bay) → US-50 E through Spooner Summit into Carson City → US-395 N into Reno.</span>
                   </div>
                   <div class="detail-item">
                     <strong>Night 1 Basecamp:</strong>
-                    <span>Hotel lodging at Lake Tahoe — check in, relax, dinner lakeside.</span>
+                    <span>Reno Airbnb &mdash; unpack, grab groceries, cook dinner and recover. First real chance to sit down since midnight.</span>
                   </div>
                 </div>
 
@@ -280,31 +276,50 @@
                     <div class="timeline-time">12:00 AM</div>
                     <div class="timeline-content">
                       <h4>Midnight Launch from Santa Ana</h4>
-                      <p>The loop begins Thursday night at midnight. Open freeway lanes all the way up I-5 North through the Central Valley — zero holiday traffic at this hour.</p>
+                      <p>Open freeway lanes all the way up I-5 North through the Central Valley &mdash; zero holiday traffic at this hour. No detour north this time, so the drive is direct to the West Shore.</p>
                     </div>
                   </div>
                   <div class="timeline-item">
-                    <div class="timeline-time">10:00 AM</div>
+                    <div class="timeline-time">7:00 AM</div>
                     <div class="timeline-content">
-                      <h4>Burney Falls — 129-ft Basalt Cascade</h4>
-                      <p>Arrive at McArthur-Burney Falls Memorial State Park. Walk the flat paved loop trail around the stunning 129-foot spring-fed falls — 100 million gallons of water per day erupting from moss-covered basalt.</p>
-                      <div class="alert alert-warning" style="margin-top:10px;">
-                        <strong>⚠️ Holiday Weekend:</strong> A pre-booked 2026 day-use parking reservation is required — book ahead as this is a popular July 4th destination.
-                      </div>
+                      <h4>Emerald Bay Overlook</h4>
+                      <p>One of the most photographed views in the Sierra. Lake Tahoe is the largest alpine lake in North America and the second-deepest lake in the U.S. &mdash; you&rsquo;ll see why the water looks so impossibly clear here.</p>
+                      <p style="margin-top:8px;"><strong>Bonus (time permitting):</strong> Vikingsholm, a 1929 Scandinavian-style mansion at the bottom of the bay, is reachable via a steep ~1-mile trail down and back up.</p>
                     </div>
                   </div>
                   <div class="timeline-item">
-                    <div class="timeline-time">1:30 PM</div>
+                    <div class="timeline-time">8:00 AM</div>
                     <div class="timeline-content">
-                      <h4>Depart South via Lassen Corridor</h4>
-                      <p>Head south through the dramatic Lassen volcanic corridor toward Lake Tahoe — approximately 2.5 hours of scenic mountain driving.</p>
+                      <h4>Eagle Falls Hike</h4>
+                      <p>The trailhead shares the same parking area as the Emerald Bay overlook &mdash; no driving between the two. A moderate ~2-mile round trip gets you to the upper falls. Continue on if you want to push to Eagle Lake.</p>
                     </div>
                   </div>
                   <div class="timeline-item">
-                    <div class="timeline-time">4:00 PM</div>
+                    <div class="timeline-time">11:30 AM</div>
                     <div class="timeline-content">
-                      <h4>Arrive Lake Tahoe — Check In &amp; Relax</h4>
-                      <p>Check into your Tahoe hotel and unwind. Tonight is all about soaking in the lakeside atmosphere — a well-earned dinner with the cobalt water shimmering outside your window.</p>
+                      <h4>Drive to South Lake Tahoe</h4>
+                      <p>About 20&ndash;25 minutes south on Hwy 89 into South Lake Tahoe.</p>
+                    </div>
+                  </div>
+                  <div class="timeline-item">
+                    <div class="timeline-time">12:00 PM</div>
+                    <div class="timeline-content">
+                      <h4>Lunch &mdash; The Chateau at the Village</h4>
+                      <p>On Lake Tahoe Blvd near Heavenly Village/Stateline. Dumpling 85 and McP&rsquo;s Irish Pub are both on site if you want to wander before deciding.</p>
+                    </div>
+                  </div>
+                  <div class="timeline-item">
+                    <div class="timeline-time">1:00 PM</div>
+                    <div class="timeline-content">
+                      <h4>Drive to Reno</h4>
+                      <p>About 1 hour via US-50 East over Spooner Summit and through Carson City, then north on US-395 into Reno. The most direct route &mdash; no need to retrace the morning&rsquo;s path.</p>
+                    </div>
+                  </div>
+                  <div class="timeline-item">
+                    <div class="timeline-time">2:00 PM</div>
+                    <div class="timeline-content">
+                      <h4>Arrive Reno &mdash; Settle into the Airbnb</h4>
+                      <p>Unpack, grab any groceries you still need, and rest up before cooking. First real chance to sit down since the midnight drive &mdash; take it easy tonight.</p>
                     </div>
                   </div>
                 </div>
@@ -314,12 +329,12 @@
                 <h4 class="media-title">Scenery &amp; Highlights</h4>
                 <div class="photo-gallery">
                   <figure class="gallery-item">
-                    <img src="Image/Burney Falls _ Lake Tahoe _ 1.jpg" alt="The roaring 129-foot Burney Falls spring-fed cascade" loading="lazy">
-                    <figcaption>Burney Falls — 100M Gallons/Day</figcaption>
+                    <img src="Image/Eagle Lake hike _ Lake Tahoe_1.jpg" alt="Eagle Falls trail winding through alpine terrain at Lake Tahoe" loading="lazy">
+                    <figcaption>Eagle Falls &amp; Emerald Bay Trailhead</figcaption>
                   </figure>
                   <figure class="gallery-item">
-                    <img src="Image/Lake Tahoe_1.webp" alt="First evening arrival at Lake Tahoe cobalt blue waters" loading="lazy">
-                    <figcaption>Lake Tahoe — Night 1 Arrival</figcaption>
+                    <img src="Image/Lake Tahoe_2.webp" alt="Emerald Bay panoramic view with Fannette Island" loading="lazy">
+                    <figcaption>Emerald Bay Overlook &mdash; 7 AM</figcaption>
                   </figure>
                 </div>
               </div>
@@ -332,52 +347,76 @@
               <div class="panel-details">
                 <div class="panel-meta-info">
                   <span class="date-badge">Saturday, July 5th</span>
-                  <span class="distance-badge">~local driving · Night 2 at Lake Tahoe</span>
+                  <span class="distance-badge">~local driving &middot; Night 2 at Reno Airbnb</span>
                 </div>
-                <h3 class="day-heading">Day 2 — Tahoe Highlights</h3>
-                <p class="day-summary">A full day dedicated to Lake Tahoe's greatest hits — turquoise granite-boulder beaches, a hidden Caribbean-colored cove, the legendary Eagle Falls trail at Emerald Bay, and a dramatic sunset scramble above the lake. Go early to beat the holiday weekend crowds.</p>
+                <h3 class="day-heading">Day 2 &mdash; East Shore, Linear from Reno</h3>
+                <p class="day-summary">A full day on Lake Tahoe&rsquo;s stunning Nevada East Shore &mdash; linear from the Reno Airbnb base. Sand Harbor at 8 AM for the turquoise coves, then Secret Cove, the rugged Skunk Harbor hike, and the dramatic Cave Rock sunset scramble before driving back to the same Airbnb for Night 2.</p>
 
                 <div class="itinerary-details-grid">
                   <div class="detail-item">
                     <strong>Focus:</strong>
-                    <span>Sand Harbor, Secret Cove, Emerald Bay + Eagle Falls, Cave Rock sunset scramble.</span>
+                    <span>Sand Harbor, Secret Cove, Skunk Harbor, Cave Rock sunset scramble. All linear from Reno via Mt. Rose Hwy (NV-431).</span>
                   </div>
                   <div class="detail-item">
                     <strong>Night 2 Basecamp:</strong>
-                    <span>Second night at Lake Tahoe hotel — celebrate the day's highlights over dinner.</span>
+                    <span>Same Reno Airbnb &mdash; drive straight back via US-50 East over Spooner Summit, no check-in needed.</span>
                   </div>
                 </div>
 
                 <div class="timeline">
                   <div class="timeline-item">
+                    <div class="timeline-time">7:00 AM</div>
+                    <div class="timeline-content">
+                      <h4>Depart Reno</h4>
+                      <p>Take Mt. Rose Highway (NV-431) toward Incline Village &mdash; about 40&ndash;45 minutes down to the lakefront.</p>
+                    </div>
+                  </div>
+                  <div class="timeline-item">
                     <div class="timeline-time">8:00 AM</div>
                     <div class="timeline-content">
                       <h4>Sand Harbor State Park</h4>
-                      <p>Arrive early to grab a prime beach spot among the iconic turquoise water and massive granite boulders. One of the most photogenic lakeshores in North America — stunning in the morning calm before the holiday crowds arrive.</p>
-                    </div>
-                  </div>
-                  <div class="timeline-item">
-                    <div class="timeline-time">11:30 AM</div>
-                    <div class="timeline-content">
-                      <h4>Secret Cove Beach</h4>
-                      <p>An easy ~1-mile round-trip trail leads down to a hidden, Caribbean-colored cove with dramatically clear water. A local treasure well worth the short hike.</p>
-                    </div>
-                  </div>
-                  <div class="timeline-item">
-                    <div class="timeline-time">2:00 PM</div>
-                    <div class="timeline-content">
-                      <h4>Emerald Bay Overlook &amp; Eagle Falls Trail</h4>
-                      <p>Drive to Emerald Bay State Park for a breathtaking overlook of Tahoe's most brilliant teal inlet and Fannette Island. Then tackle the Eagle Falls trail as the waterfall thunders alongside you on the climb.</p>
+                      <p>Famous for its turquoise coves and granite boulders. Lake Tahoe&rsquo;s water is about 99.994% pure &mdash; exactly why it looks this clear. Arrive early for the best spot.</p>
                       <div class="alert alert-warning" style="margin-top:10px;">
-                        <strong>⚠️ Holiday Buffer:</strong> Build in an extra 2 hours of buffer here for holiday weekend parking and traffic congestion along the west shore.
+                        <strong>&#x26A0;&#xFE0F; Reservation Required:</strong> Nevada State Parks requires a day-use reservation (<a href="https://reservenevada.com" target="_blank" style="color:#ffb74d;">reservenevada.com</a>) for entry before 10:30 AM during peak season &mdash; book ahead for this July 4th-weekend Saturday.
                       </div>
+                    </div>
+                  </div>
+                  <div class="timeline-item">
+                    <div class="timeline-time">11:00 AM</div>
+                    <div class="timeline-content">
+                      <h4>Secret Cove</h4>
+                      <p>About 20 minutes further south on Hwy 28. A short trail down to a hidden, Caribbean-colored cove with dramatically clear water.</p>
+                    </div>
+                  </div>
+                  <div class="timeline-item">
+                    <div class="timeline-time">1:00 PM</div>
+                    <div class="timeline-content">
+                      <h4>Skunk Harbor</h4>
+                      <p>Roughly 1.5 miles each way down an old logging road &mdash; look for remnants of an 1870s railroad grade along the way. The cove at the bottom has a stone picnic house built in the 1920s by a San Francisco family.</p>
+                      <div class="alert alert-info" style="margin-top:10px;">
+                        <strong>&#x1F9BA; Pack It Out:</strong> No restrooms or trash service at Skunk Harbor. Bring a packed picnic and pack out everything you bring in.
+                      </div>
+                    </div>
+                  </div>
+                  <div class="timeline-item">
+                    <div class="timeline-time">3:30 PM</div>
+                    <div class="timeline-content">
+                      <h4>Drive Toward Cave Rock</h4>
+                      <p>Continue south on Hwy 28/50 toward the south end of the East Shore &mdash; about 20&ndash;25 minutes.</p>
                     </div>
                   </div>
                   <div class="timeline-item">
                     <div class="timeline-time">7:30 PM</div>
                     <div class="timeline-content">
                       <h4>Cave Rock Sunset Scramble</h4>
-                      <p>Drive to the East Shore (Nevada side) for a short, steep scramble to the top of Cave Rock. The granite summit provides an unforgettable 180° panorama as the sun sinks below the Sierra crest, painting the entire lake in copper and gold.</p>
+                      <p>A short, steep climb for a 180&deg; sunset view over the Sierra &mdash; the final stop of the day as the sun sinks below the crest, painting the entire lake copper and gold.</p>
+                    </div>
+                  </div>
+                  <div class="timeline-item">
+                    <div class="timeline-time">8:00 PM</div>
+                    <div class="timeline-content">
+                      <h4>Drive Back to Reno</h4>
+                      <p>About 1 hour via US-50 East over Spooner Summit and Carson City. Same Airbnb as Friday night &mdash; head straight back, no check-in needed.</p>
                     </div>
                   </div>
                 </div>
@@ -387,16 +426,12 @@
                 <h4 class="media-title">Scenery &amp; Highlights</h4>
                 <div class="photo-gallery">
                   <figure class="gallery-item">
-                    <img src="Image/Eagle Lake hike _ Lake Tahoe_1.jpg" alt="Eagle Falls trail with stunning alpine views at Lake Tahoe" loading="lazy">
-                    <figcaption>Eagle Falls Trail &amp; Emerald Bay</figcaption>
+                    <img src="Image/Lake Tahoe_1.webp" alt="Sand Harbor turquoise waters and granite boulders at sunrise" loading="lazy">
+                    <figcaption>Sand Harbor &mdash; East Shore Jewel</figcaption>
                   </figure>
                   <figure class="gallery-item">
-                    <img src="Image/Lake Tahoe_2.webp" alt="Emerald Bay panoramic view with Fannette Island at Lake Tahoe" loading="lazy">
-                    <figcaption>Emerald Bay &amp; Fannette Island</figcaption>
-                  </figure>
-                  <figure class="gallery-item">
-                    <img src="Image/Lake Tahoe_1.webp" alt="Sand Harbor turquoise waters and granite boulders" loading="lazy">
-                    <figcaption>Sand Harbor — Morning Magic</figcaption>
+                    <img src="Image/Lake Tahoe_2.webp" alt="Cave Rock panoramic sunset view over Lake Tahoe" loading="lazy">
+                    <figcaption>Cave Rock &mdash; 180&deg; Sunset Panorama</figcaption>
                   </figure>
                 </div>
               </div>
@@ -429,8 +464,8 @@
                   <div class="timeline-item">
                     <div class="timeline-time">8:30 AM</div>
                     <div class="timeline-content">
-                      <h4>Depart Lake Tahoe</h4>
-                      <p>Check out and begin the southbound drive through the Sierra Nevada passes. Approximately 5 hours of mountain scenery to Sequoia.</p>
+                      <h4>Depart Reno</h4>
+                      <p>Check out of the Airbnb and begin the southbound drive through the Sierra Nevada. Approximately 5 hours to Sequoia via US-395 S and CA-168 W.</p>
                     </div>
                   </div>
                   <div class="timeline-item">
@@ -687,34 +722,36 @@
             <p>Paste directly into your group chat to coordinate the midnight departure logistics.</p>
 
             <div class="copy-box-container">
-              <pre class="copy-box" id="share-text-box">🏔️ SIERRA ASCENT ROAD TRIP PLAN 🏔️
+              <pre class="copy-box" id="share-text-box">&#x1F3D4;&#xFE0F; SIERRA ASCENT ROAD TRIP PLAN &#x1F3D4;&#xFE0F;
 Departing Santa Ana: Friday July 4th @ 12:00 AM (midnight Thursday night!)
-Trip Length: 4 Days & 3 Nights — July 4–7, 2026
+Trip Length: 4 Days &amp; 3 Nights &mdash; July 4&ndash;7, 2026
+Base Camp: Reno, NV Airbnb (Nights 1 &amp; 2)
 
-📍 OUR ROUTE:
-Day 1 (Fri Jul 4): Santa Ana → Burney Falls → Lake Tahoe (Night 1)
-Day 2 (Sat Jul 5): Full Tahoe Day — Sand Harbor, Secret Cove, Eagle Falls, Cave Rock (Night 2)
-Day 3 (Sun Jul 6): Lake Tahoe → Sequoia NP — Kaweah River swim, Moro Rock, Gen. Sherman (Night 3)
-Day 4 (Mon Jul 7): Kings Canyon (Gen. Grant Tree + Zumwalt Meadow) → Home by 5:30 PM
+&#x1F4CD; OUR ROUTE:
+Day 1 (Fri Jul 4): Santa Ana &rarr; West Shore Tahoe (Emerald Bay + Eagle Falls + Lunch) &rarr; Reno Airbnb (Night 1)
+Day 2 (Sat Jul 5): Reno &rarr; East Shore loop: Sand Harbor, Secret Cove, Skunk Harbor, Cave Rock sunset &rarr; back to Reno (Night 2)
+Day 3 (Sun Jul 6): Reno &rarr; Sequoia NP &mdash; Kaweah River swim, Moro Rock, Gen. Sherman Tree (Night 3)
+Day 4 (Mon Jul 7): Kings Canyon (Gen. Grant Tree + Zumwalt Meadow) &rarr; Home by 5:30 PM
 
-🥾 KEY HIKES & SIGHTS:
-• Burney Falls — 129-ft spring-fed cascade, 100M gallons/day (pre-book parking!)
-• Sand Harbor State Park — turquoise water & granite boulders (go EARLY!)
-• Secret Cove — hidden Caribbean-colored beach (1-mile trail)
-• Eagle Falls Trail & Emerald Bay overlook — build in 2hr holiday traffic buffer
-• Cave Rock sunset scramble — 180° panorama over the Sierra
-• Kaweah River swim + Moro Rock staircase + General Sherman Tree
-• General Grant Tree ("Nation's Christmas Tree") + Zumwalt Meadow boardwalk
+&#x1F45E; KEY HIKES &amp; SIGHTS:
+&bull; Emerald Bay Overlook &mdash; 7 AM arrival (+ optional Vikingsholm mansion hike)
+&bull; Eagle Falls Trail &mdash; ~2 mi round trip from same parking area as Emerald Bay
+&bull; Sand Harbor State Park &mdash; turquoise water &amp; granite boulders (reserve nevada.com!)
+&bull; Secret Cove &mdash; hidden Caribbean-colored cove (short trail south on Hwy 28)
+&bull; Skunk Harbor &mdash; 1.5 mi logging-road hike, 1920s stone picnic house. Pack it out!
+&bull; Cave Rock sunset scramble &mdash; 180&deg; panorama over the Sierra
+&bull; Kaweah River swim + Moro Rock staircase + General Sherman Tree
+&bull; General Grant Tree (&ldquo;Nation&rsquo;s Christmas Tree&rdquo;) + Zumwalt Meadow boardwalk
 
-🎒 PACKING ESSENTIALS:
-• Warm clothes & swimming suit
-• 6 liters of water capacity per person (reusable bottles/flasks)
-• Personal sunscreen and bug spray — everyone packs their own
-• First-aid kit (trip organizer)
-• Warm fleece layers for cold Sequoia evenings — especially after the Sunday swim!
-• No sleeping bags needed (hotels each night)
+&#x1F9F3; PACKING ESSENTIALS:
+&bull; Warm layers &amp; swim gear
+&bull; 6 liters of water capacity per person
+&bull; Personal sunscreen and bug spray
+&bull; First-aid kit
+&bull; Fleece &amp; pants for cold Sequoia evenings after the Sunday swim
+&bull; Packed lunch/snacks for Skunk Harbor (no food services on trail)
 
-Let's do this! 🚗💨 #SierraAscent #Roadtrip #BurneyFalls #LakeTahoe #Sequoia #KingsCanyon</pre>
+Let&rsquo;s do this! &#x1F697;&#x1F4A8; #SierraAscent #Roadtrip #LakeTahoe #Reno #Sequoia #KingsCanyon</pre>
             </div>
 
             <button class="btn btn-primary" id="btn-copy-share">
@@ -748,8 +785,8 @@ Let's do this! 🚗💨 #SierraAscent #Roadtrip #BurneyFalls #LakeTahoe #Sequoia
 
   <footer class="app-footer">
     <div class="section-container text-center">
-      <p class="footer-title">Sierra Ascent Loop: Santa Ana &rarr; Burney Falls &rarr; Tahoe &rarr; Sequoia &rarr; Kings Canyon 2026</p>
-      <p class="footer-meta">The Ultimate Northern California 4-Day Sierra Nevada Expedition &middot; July 4&ndash;7, 2026</p>
+      <p class="footer-title">Sierra Ascent Loop: Santa Ana &rarr; West Shore Tahoe &rarr; Reno &rarr; Sequoia &rarr; Kings Canyon 2026</p>
+      <p class="footer-meta">The Ultimate Lake Tahoe &amp; Sierra Nevada 4-Day Expedition &middot; July 4&ndash;7, 2026</p>
       <p class="footer-meta" style="margin-top: 8px; font-size: 0.75rem; opacity: 0.7;">Co-authored by Samuel Do &amp; Antigravity</p>
     </div>
   </footer>
