@@ -39,85 +39,20 @@ document.addEventListener('DOMContentLoaded', () => {
   // ═══════════════════════════════════════════════
   // SVG PATH ELEMENTS
   // ═══════════════════════════════════════════════
-  const seg1Path      = document.getElementById('outbound-sa-kc');     // SA → KC
-  const seg2Direct    = document.getElementById('outbound-kc-tahoe');  // KC → Tahoe (direct)
-  const seg2Burney    = document.getElementById('outbound-kc-burney'); // KC → Burney → Tahoe
-  const returnPath    = document.getElementById('return-route');       // Tahoe → Mammoth
-
-  // Burney toggle SVG elements
-  const shadowDirect  = document.getElementById('shadow-kc-tahoe');
-  const shadowBurney  = document.getElementById('shadow-kc-burney');
-  const labelDirect   = document.getElementById('label-kc-tahoe-direct');
-  const labelKcBurney = document.getElementById('label-kc-burney');
-  const labelBurneyTahoe = document.getElementById('label-burney-tahoe');
-  const nodeBurney    = document.getElementById('node-burney');
+  const seg1Path   = document.getElementById('outbound-sa-burney');    // SA → Burney
+  const seg2Path   = document.getElementById('outbound-burney-tahoe'); // Burney → Tahoe
+  const seg3Path   = document.getElementById('outbound-tahoe-seq');    // Tahoe → Sequoia
+  const seg4Path   = document.getElementById('outbound-seq-kc');       // Sequoia → KC
+  const returnPath = document.getElementById('return-route');           // KC → Home
 
   // ── Get actual path lengths via browser rendering ──
-  let seg1Len = 0, seg2DirLen = 0, seg2BurLen = 0, retLen = 0;
-  let burneyFraction = 0.52; // fraction along KC→Burney→Tahoe path where Burney node sits
-  let seqFraction    = 0.50; // fraction along SA→KC path where Sequoia sits
+  let seg1Len = 0, seg2Len = 0, seg3Len = 0, seg4Len = 0, retLen = 0;
 
-  if (seg1Path) {
-    seg1Len    = seg1Path.getTotalLength();
-    seg1Path.style.strokeDasharray  = seg1Len;
-    seg1Path.style.strokeDashoffset = seg1Len; // hidden initially
-  }
-  if (seg2Direct) {
-    seg2DirLen = seg2Direct.getTotalLength();
-    seg2Direct.style.strokeDasharray  = seg2DirLen;
-    seg2Direct.style.strokeDashoffset = seg2DirLen; // hidden initially
-  }
-  if (seg2Burney) {
-    seg2BurLen = seg2Burney.getTotalLength();
-    seg2Burney.style.strokeDasharray  = seg2BurLen;
-    seg2Burney.style.strokeDashoffset = seg2BurLen; // hidden initially
-  }
-  if (returnPath) {
-    retLen = returnPath.getTotalLength();
-    returnPath.style.strokeDasharray  = retLen;
-    returnPath.style.strokeDashoffset = retLen; // hidden initially
-  }
-
-  // ─── Burney toggle state ───
-  let burneyActive = false;
-  const toggleBurney = document.getElementById('toggle-burney');
-  const burneyRouteLabel = document.getElementById('burney-route-label');
-
-  function applyBurneyMode(active) {
-    burneyActive = active;
-
-    // Swap shadows
-    if (shadowDirect) shadowDirect.style.display = active ? 'none' : '';
-    if (shadowBurney) shadowBurney.style.display = active ? '' : 'none';
-
-    // Swap active paths
-    if (seg2Direct) seg2Direct.style.display = active ? 'none' : '';
-    if (seg2Burney) seg2Burney.style.display = active ? '' : 'none';
-
-    // Swap distance labels
-    if (labelDirect)    labelDirect.style.display    = active ? 'none' : '';
-    if (labelKcBurney)  labelKcBurney.style.display  = active ? '' : 'none';
-    if (labelBurneyTahoe) labelBurneyTahoe.style.display = active ? '' : 'none';
-
-    // Show/hide Burney Falls node
-    if (nodeBurney) nodeBurney.style.display = active ? '' : 'none';
-
-    // Update label text
-    if (burneyRouteLabel) {
-      burneyRouteLabel.textContent = active
-        ? 'Via Burney Falls ↑'
-        : 'Direct KC → Tahoe';
-    }
-
-    // Re-animate to current node so the correct path fills
-    replayCurrentAnimation();
-  }
-
-  if (toggleBurney) {
-    toggleBurney.addEventListener('change', () => {
-      applyBurneyMode(toggleBurney.checked);
-    });
-  }
+  if (seg1Path)   { seg1Len = seg1Path.getTotalLength();   seg1Path.style.strokeDasharray   = seg1Len;   seg1Path.style.strokeDashoffset   = seg1Len; }
+  if (seg2Path)   { seg2Len = seg2Path.getTotalLength();   seg2Path.style.strokeDasharray   = seg2Len;   seg2Path.style.strokeDashoffset   = seg2Len; }
+  if (seg3Path)   { seg3Len = seg3Path.getTotalLength();   seg3Path.style.strokeDasharray   = seg3Len;   seg3Path.style.strokeDashoffset   = seg3Len; }
+  if (seg4Path)   { seg4Len = seg4Path.getTotalLength();   seg4Path.style.strokeDasharray   = seg4Len;   seg4Path.style.strokeDashoffset   = seg4Len; }
+  if (returnPath) { retLen  = returnPath.getTotalLength(); returnPath.style.strokeDasharray  = retLen;   returnPath.style.strokeDashoffset  = retLen; }
 
   // ═══════════════════════════════════════════════
   // ANIMATE ROUTE TO A GIVEN NODE
@@ -127,67 +62,41 @@ document.addEventListener('DOMContentLoaded', () => {
   function animateToNode(nodeId) {
     currentNode = nodeId;
 
-    // Default: hide all segments
-    let s1Offset  = seg1Len;    // seg1 hidden
-    let s2Offset  = burneyActive ? seg2BurLen : seg2DirLen; // seg2 hidden
-    let retOffset = retLen;     // return hidden
+    // Default: all hidden
+    let o1 = seg1Len, o2 = seg2Len, o3 = seg3Len, o4 = seg4Len, ret = retLen;
 
     switch (nodeId) {
       case 'node-santa-ana':
-        // Nothing drawn — loop not yet started
-        s1Offset  = seg1Len;
-        s2Offset  = burneyActive ? seg2BurLen : seg2DirLen;
-        retOffset = retLen;
-        break;
-
-      case 'node-sequoia':
-        // Fill seg1 up to ~50% (Sequoia is roughly halfway from SA to KC)
-        s1Offset  = seg1Len * (1 - seqFraction);
-        s2Offset  = burneyActive ? seg2BurLen : seg2DirLen;
-        retOffset = retLen;
-        break;
-
-      case 'node-kings-canyon':
-        // Day 2 driving continues to Tahoe, so fill seg2 completely
-        s1Offset  = 0;
-        s2Offset  = 0;
-        retOffset = retLen;
+        // Nothing drawn
         break;
 
       case 'node-burney':
-        // Fill seg1 completely, fill seg2 up to Burney (~52%)
-        s1Offset  = 0;
-        s2Offset  = burneyActive
-          ? seg2BurLen * (1 - burneyFraction)
-          : seg2DirLen; // if not in burney mode, don't fill seg2
-        retOffset = retLen;
+        // Fill seg1 fully (SA → Burney)
+        o1 = 0;
         break;
 
       case 'node-tahoe':
-        // Fill seg1 + seg2 completely, return hidden
-        s1Offset  = 0;
-        s2Offset  = 0;
-        retOffset = retLen;
+        // Fill seg1 + seg2 (SA → Burney → Tahoe)
+        o1 = 0; o2 = 0;
         break;
 
-      case 'node-mammoth':
-        // All outbound done, fill return to ~55%
-        s1Offset  = 0;
-        s2Offset  = 0;
-        retOffset = retLen * (1 - 0.55);
+      case 'node-sequoia':
+        // Fill seg1 + seg2 + seg3 (→ Sequoia)
+        o1 = 0; o2 = 0; o3 = 0;
+        break;
+
+      case 'node-kings-canyon':
+        // Fill all outbound segments (→ Kings Canyon)
+        o1 = 0; o2 = 0; o3 = 0; o4 = 0;
         break;
     }
 
     // Apply offsets
-    if (seg1Path)   seg1Path.style.strokeDashoffset   = s1Offset;
-
-    if (burneyActive) {
-      if (seg2Burney) seg2Burney.style.strokeDashoffset = s2Offset;
-    } else {
-      if (seg2Direct) seg2Direct.style.strokeDashoffset = s2Offset;
-    }
-
-    if (returnPath) returnPath.style.strokeDashoffset = retOffset;
+    if (seg1Path)   seg1Path.style.strokeDashoffset   = o1;
+    if (seg2Path)   seg2Path.style.strokeDashoffset   = o2;
+    if (seg3Path)   seg3Path.style.strokeDashoffset   = o3;
+    if (seg4Path)   seg4Path.style.strokeDashoffset   = o4;
+    if (returnPath) returnPath.style.strokeDashoffset = ret;
   }
 
   function replayCurrentAnimation() {

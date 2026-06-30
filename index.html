@@ -56,20 +56,162 @@
         <div class="map-wrapper">
           <svg viewBox="0 -52 1020 322" class="route-map-svg" id="route-map-svg">
             <defs>
+              <!-- Outbound gradient: Orange → Blue → Green -->
               <linearGradient id="outbound-gradient" x1="0%" y1="100%" x2="100%" y2="0%">
                 <stop offset="0%"   stop-color="#ef7e32" />
-                <stop offset="40%"  stop-color="#4caf50" />
-                <stop offset="100%" stop-color="#0288d1" />
+                <stop offset="50%"  stop-color="#0288d1" />
+                <stop offset="100%" stop-color="#4caf50" />
               </linearGradient>
+              <!-- Return gradient: Green → Orange -->
               <linearGradient id="return-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%"   stop-color="#0288d1" />
-                <stop offset="100%" stop-color="#ffa726" />
+                <stop offset="0%"   stop-color="#4caf50" />
+                <stop offset="100%" stop-color="#ef7e32" />
               </linearGradient>
+              <!-- Glow filter -->
               <filter id="glow" x="-30%" y="-30%" width="160%" height="160%">
                 <feGaussianBlur stdDeviation="5" result="blur"/>
                 <feComposite in="SourceGraphic" in2="blur" operator="over"/>
               </filter>
             </defs>
+
+            <!-- ─── Shadow Paths ─── -->
+            <!-- SA → Burney Falls shadow -->
+            <path id="shadow-sa-burney"
+                  d="M 90,215 C 200,160 310,60 493,-18"
+                  fill="none" stroke="#1d2e24" stroke-width="10" stroke-linecap="round"/>
+            <!-- Burney → Tahoe shadow -->
+            <path id="shadow-burney-tahoe"
+                  d="M 493,-18 Q 548,8 598,56"
+                  fill="none" stroke="#1d2e24" stroke-width="10" stroke-linecap="round"/>
+            <!-- Tahoe → Sequoia shadow -->
+            <path id="shadow-tahoe-seq"
+                  d="M 598,56 C 640,100 660,140 680,175"
+                  fill="none" stroke="#1d2e24" stroke-width="10" stroke-linecap="round"/>
+            <!-- Sequoia → Kings Canyon shadow -->
+            <path id="shadow-seq-kc"
+                  d="M 680,175 C 700,155 730,135 760,120"
+                  fill="none" stroke="#1d2e24" stroke-width="10" stroke-linecap="round"/>
+            <!-- Return: KC → Home shadow -->
+            <path id="shadow-kc-home"
+                  d="M 760,120 C 820,160 870,185 920,218"
+                  fill="none" stroke="#1d2e24" stroke-width="10" stroke-linecap="round"/>
+            <!-- Loop-close dashed line -->
+            <path d="M 920,220 C 715,240 400,242 90,220"
+                  fill="none" stroke="rgba(255,255,255,0.07)" stroke-width="2"
+                  stroke-dasharray="10,7" stroke-linecap="round"/>
+
+            <!-- ─── Active Paths (animated, split into segments) ─── -->
+            <!-- Segment 1: Santa Ana → Burney Falls -->
+            <path id="outbound-sa-burney"
+                  d="M 90,215 C 200,160 310,60 493,-18"
+                  fill="none" stroke="url(#outbound-gradient)" stroke-width="6"
+                  stroke-linecap="round"
+                  style="transition: stroke-dashoffset 0.7s cubic-bezier(0.4,0,0.2,1);"/>
+            <!-- Segment 2: Burney Falls → Lake Tahoe -->
+            <path id="outbound-burney-tahoe"
+                  d="M 493,-18 Q 548,8 598,56"
+                  fill="none" stroke="url(#outbound-gradient)" stroke-width="6"
+                  stroke-linecap="round"
+                  style="transition: stroke-dashoffset 0.7s cubic-bezier(0.4,0,0.2,1);"/>
+            <!-- Segment 3: Lake Tahoe → Sequoia -->
+            <path id="outbound-tahoe-seq"
+                  d="M 598,56 C 640,100 660,140 680,175"
+                  fill="none" stroke="url(#outbound-gradient)" stroke-width="6"
+                  stroke-linecap="round"
+                  style="transition: stroke-dashoffset 0.7s cubic-bezier(0.4,0,0.2,1);"/>
+            <!-- Segment 4: Sequoia → Kings Canyon -->
+            <path id="outbound-seq-kc"
+                  d="M 680,175 C 700,155 730,135 760,120"
+                  fill="none" stroke="url(#outbound-gradient)" stroke-width="6"
+                  stroke-linecap="round"
+                  style="transition: stroke-dashoffset 0.7s cubic-bezier(0.4,0,0.2,1);"/>
+            <!-- Return: Kings Canyon → Santa Ana -->
+            <path id="return-route"
+                  d="M 760,120 C 820,160 870,185 920,218"
+                  fill="none" stroke="url(#return-gradient)" stroke-width="6"
+                  stroke-linecap="round"
+                  style="transition: stroke-dashoffset 0.7s cubic-bezier(0.4,0,0.2,1);"/>
+
+            <!-- ─── Distance Labels ─── -->
+            <!-- SA → Burney Falls -->
+            <g class="path-label" transform="translate(270,100)">
+              <rect x="-64" y="-18" width="128" height="26" rx="13" fill="#1b2e22" stroke="#ef7e32" stroke-width="1"/>
+              <text text-anchor="middle" fill="#ffb74d" font-size="11" font-weight="600" y="-1">~500 mi | ~10h drive</text>
+            </g>
+            <!-- Burney → Tahoe -->
+            <g class="path-label" transform="translate(548,22)">
+              <rect x="-52" y="-16" width="104" height="24" rx="12" fill="#1b2e22" stroke="#ff7043" stroke-width="1"/>
+              <text text-anchor="middle" fill="#ff8a65" font-size="10" font-weight="600" y="-1">~2.5h south</text>
+            </g>
+            <!-- Tahoe → Sequoia -->
+            <g class="path-label" transform="translate(650,105)">
+              <rect x="-54" y="-18" width="108" height="26" rx="13" fill="#1b2e22" stroke="#0288d1" stroke-width="1"/>
+              <text text-anchor="middle" fill="#29b6f6" font-size="11" font-weight="600" y="-1">~280 mi | ~5h</text>
+            </g>
+            <!-- Sequoia → KC -->
+            <g class="path-label" transform="translate(720,148)">
+              <rect x="-50" y="-16" width="100" height="24" rx="12" fill="#1b2e22" stroke="#81c784" stroke-width="1"/>
+              <text text-anchor="middle" fill="#a5d6a7" font-size="10" font-weight="600" y="-1">30 mi | ~1.2h</text>
+            </g>
+            <!-- KC → Home (return) -->
+            <g class="path-label" transform="translate(500,248)">
+              <rect x="-100" y="-17" width="200" height="25" rx="12" fill="#1b2e22" stroke="rgba(239,126,50,0.4)" stroke-width="1"/>
+              <text text-anchor="middle" fill="#ffa726" font-size="11" font-weight="500" y="-2">← ~290 mi | ~5h home via CA-99/I-5</text>
+            </g>
+
+            <!-- ─── Direction Arrows ─── -->
+            <text transform="translate(160,175)" fill="rgba(239,126,50,0.6)" font-size="14">↗</text>
+            <text transform="translate(840,175)" fill="rgba(76,175,80,0.6)" font-size="14">↘</text>
+
+            <!-- ═══════ MAP NODES ═══════ -->
+
+            <!-- Node: Santa Ana (Departure + Return) -->
+            <g class="map-node active" id="node-santa-ana" transform="translate(90, 215)" data-day="1">
+              <circle r="20" fill="#16251b" stroke="#ef7e32" stroke-width="4" filter="url(#glow)"/>
+              <circle r="9" fill="#ef7e32"/>
+              <text y="38" text-anchor="middle" fill="#fff" font-size="12" font-weight="700">Santa Ana</text>
+              <text y="52" text-anchor="middle" fill="#888" font-size="10" font-weight="500">Departure &amp; Return</text>
+            </g>
+
+            <!-- Node: Burney Falls (Day 1 – confirmed stop) -->
+            <g class="map-node" id="node-burney" transform="translate(493, -18)" data-day="1">
+              <circle r="17" fill="#16251b" stroke="#ff7043" stroke-width="3"/>
+              <circle r="7" fill="#ff7043"/>
+              <text y="30" text-anchor="middle" fill="#fff" font-size="12" font-weight="700">Burney Falls</text>
+              <text y="44" text-anchor="middle" fill="#888" font-size="10" font-weight="500">Day 1 · Morning Stop</text>
+            </g>
+
+            <!-- Node: Lake Tahoe (Nights 1 & 2) -->
+            <g class="map-node" id="node-tahoe" transform="translate(598, 56)" data-day="1">
+              <circle r="20" fill="#16251b" stroke="#0288d1" stroke-width="4"/>
+              <circle r="9" fill="#0288d1"/>
+              <text y="38" text-anchor="middle" fill="#fff" font-size="12" font-weight="700">Lake Tahoe</text>
+              <text y="52" text-anchor="middle" fill="#888" font-size="10" font-weight="500">Nights 1 &amp; 2 · Resort Base</text>
+            </g>
+
+            <!-- Node: Sequoia NP (Night 3) -->
+            <g class="map-node" id="node-sequoia" transform="translate(680, 175)" data-day="3">
+              <circle r="17" fill="#16251b" stroke="#4caf50" stroke-width="3"/>
+              <circle r="7" fill="#4caf50"/>
+              <text y="-28" text-anchor="middle" fill="#fff" font-size="12" font-weight="700">Sequoia NP</text>
+              <text y="-14" text-anchor="middle" fill="#888" font-size="10" font-weight="500">Night 3 · Giant Forest</text>
+            </g>
+
+            <!-- Node: Kings Canyon (Day 4) -->
+            <g class="map-node" id="node-kings-canyon" transform="translate(760, 120)" data-day="4">
+              <circle r="15" fill="#16251b" stroke="#81c784" stroke-width="3"/>
+              <circle r="6" fill="#81c784"/>
+              <text y="32" text-anchor="middle" fill="#fff" font-size="12" font-weight="700">Kings Canyon</text>
+              <text y="46" text-anchor="middle" fill="#888" font-size="10" font-weight="500">Day 4 · Then Home</text>
+            </g>
+
+            <!-- Return "Santa Ana" endpoint -->
+            <g transform="translate(920, 218)">
+              <circle r="10" fill="#16251b" stroke="#ef7e32" stroke-width="2" opacity="0.7"/>
+              <circle r="4" fill="#ef7e32" opacity="0.7"/>
+              <text y="22" text-anchor="middle" fill="rgba(239,126,50,0.7)" font-size="10" font-weight="600">↺ Home</text>
+            </g>
+
           </svg>
         </div>
 
